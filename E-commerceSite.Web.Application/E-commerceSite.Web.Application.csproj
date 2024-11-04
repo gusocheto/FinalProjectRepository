@@ -24,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Website.Data.Models\Website.Data.Models.csproj" />
     <ProjectReference Include="..\Website.Data\Website.Data.csproj" />
-    <ProjectReference Include="..\Website.Infrastructure\Website.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
