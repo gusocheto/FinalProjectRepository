@@ -9,7 +9,7 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The id of the customer")]
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         [Required]
         [MinLength(CustomerNameMinLength)]
