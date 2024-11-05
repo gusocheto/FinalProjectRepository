@@ -18,13 +18,16 @@ namespace Website.Data.Models
         public string Username { get; set; } = null!;
 
         [Required]
+        [Comment("The password of the customer")]
         public string Password { get; set; } = null!;
 
         [Required]
+        [Comment("The email of the user")]
         //[RegularExpression] potential
         public string Email { get; set; } = null!;
 
         [Required]
+        [Comment("The address of the customer")]
         public string Address { get; set; } = null!;
 
         //Add OrderId
