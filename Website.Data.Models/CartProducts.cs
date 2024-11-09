@@ -18,7 +18,6 @@ namespace Website.Data.Models
         public Guid ProductId { get; set; }
 
         [ForeignKey(nameof(ProductId))]
-
         public Product Product { get; set; } = null!;
     }
 }

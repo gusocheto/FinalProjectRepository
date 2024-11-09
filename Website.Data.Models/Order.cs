@@ -30,7 +30,7 @@ namespace Website.Data.Models
         // OrderDetailsId
         [Required]
         [Comment("The id of the order details")]
-        public Guid OrderDetailsId { get; set; }
+        public int OrderDetailsId { get; set; }
 
         [Required]
         [ForeignKey(nameof(OrderDetailsId))]

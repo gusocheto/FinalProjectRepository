@@ -40,8 +40,7 @@ namespace Website.Data.Models
         [ForeignKey(nameof(CartId))]
         public Cart Cart { get; set; } = null!;
 
-        //Add OrderId
         public virtual IEnumerable<Order> Orders { get; set; } 
-            = new HashSet<Order>();
+                = new HashSet<Order>();
     }
 }

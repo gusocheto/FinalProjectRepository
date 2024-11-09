@@ -54,7 +54,7 @@ namespace Website.Data.Models
         public Category Category { get; set; } = null!;
 
         [Comment("The true/false statement for the product avaliability")]
-        private bool IsAvaliable { get; set; }
+        public bool IsAvaliable { get; set; }
 
         // Discount
     }
