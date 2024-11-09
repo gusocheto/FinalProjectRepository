@@ -14,7 +14,7 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The id of the product")]
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
 
         [Required]
         [Comment("The name of the product")]

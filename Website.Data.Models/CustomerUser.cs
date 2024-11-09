@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Website.Data.Models
 {
@@ -30,8 +31,17 @@ namespace Website.Data.Models
         [Comment("The address of the customer")]
         public string Address { get; set; } = null!;
 
-        //Add OrderId
-
         //Add CartId
+        [Required]
+        [Comment("The id of the user's cart")]
+        public int CartId { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(CartId))]
+        public Cart Cart { get; set; } = null!;
+
+        //Add OrderId
+        public virtual IEnumerable<Order> Orders { get; set; } 
+            = new HashSet<Order>();
     }
 }

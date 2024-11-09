@@ -6,7 +6,6 @@ namespace Website.Data.Models
 {
     public class ProductType
     {
-
         [Key]
         [Comment("Id of the gender type")]
         public int GenderId { get; set; }

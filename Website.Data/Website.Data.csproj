@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Website.Common\Website.Common.csproj" />
+    <ProjectReference Include="..\Website.Data.Models\Website.Data.Models.csproj" />
   </ItemGroup>
 
 </Project>

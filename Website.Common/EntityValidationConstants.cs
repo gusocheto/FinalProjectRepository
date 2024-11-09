@@ -15,5 +15,13 @@
             public const byte ProductDetailsMinLength = 10;
             public const byte ProductDetailsMaxLength = byte.MaxValue;
         }
+
+        public static class OderDetails
+        {
+            public const byte CityNameMinLength = 1;
+            public const byte CityNameMaxLength = 200;
+            public const byte CountryNameMinLength = 4;
+            public const byte CountryNameMaxLength = 60;
+        }
     }
 }
