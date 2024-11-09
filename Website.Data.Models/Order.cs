@@ -28,6 +28,7 @@ namespace Website.Data.Models
         public DateTime DateOnOrderCreation { get; set; }
 
         // OrderDetailsId
+
         [Required]
         [Comment("The id of the order of the status")]
         public int StatusId { get; set; }

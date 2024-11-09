@@ -4,7 +4,7 @@ using Website.Data.Models.Enums;
 
 namespace Website.Data.Models
 {
-    public class Gender
+    public class ProductType
     {
 
         [Key]
@@ -12,6 +12,6 @@ namespace Website.Data.Models
         public int GenderId { get; set; }
 
         [Comment("The gender declaration for a product")]
-        public GenderEnumaration GenderType { get; set; }
+        public ProductCategorizationEnumaration ProductTypeName { get; set; }
     }
 }

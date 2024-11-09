@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Website.Data.Models.Enums
 {
-    public enum GenderEnumaration
+    public enum ProductCategorizationEnumaration
     {
         Male = 1,
-        Female = 2
+        Female = 2,
+        Kids = 3,
+        Accessories = 4,
     }
 }
