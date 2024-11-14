@@ -12,6 +12,7 @@ namespace Website.Data.Models
         public int StatusId { get; set; }
 
         [Comment("Status type of the order")]
+        [Required]
         public StatusEnumaration StatusType { get; set; }
     }
 }

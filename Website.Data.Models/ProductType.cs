@@ -8,9 +8,10 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("Id of the gender type")]
-        public int GenderId { get; set; }
+        public int ProductTypeId { get; set; }
 
         [Comment("The gender declaration for a product")]
+        [Required]
         public ProductCategorizationEnumaration ProductTypeName { get; set; }
     }
 }

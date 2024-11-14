@@ -16,6 +16,7 @@ namespace Website.Data.Models
         public int CategoryId { get; set; }
 
         [Comment("The name of the categoryType")]
+        [Required]
         public CategoryEnumaration CategoryType { get; set; }
     }
 }
