@@ -7,10 +7,11 @@ namespace Website.Data.Models
     public class Cart
     {
         [Key]
-        [Comment("The id of the cart")]
+        [Comment("The ID of the cart")]
         public int CartID { get; set; }
 
-        public virtual ICollection<CartProducts> CartProducts { get; set; }
-                = new List<CartProducts>();
+        [Required]
+        [Comment("The collection of items in the cart")]
+        public virtual ICollection<CartProducts> CartItems { get; set; } = new List<CartProducts>();
     }
 }

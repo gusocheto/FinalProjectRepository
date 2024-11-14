@@ -24,25 +24,23 @@ namespace Website.Data.Models
         public CustomerUser User { get; set; } = null!;
 
         [Required]
-        [Comment("The date on which the order was made on")]
+        [Comment("The date on which the order was created")]
         public DateTime DateOnOrderCreation { get; set; }
 
-        // OrderDetailsId
         [Required]
-        [Comment("The id of the order details")]
+        [Comment("The ID of the order details")]
         public int OrderDetailsId { get; set; }
 
         [Required]
         [ForeignKey(nameof(OrderDetailsId))]
         public OrderDetails OrderDetails { get; set; } = null!;
 
-
         [Required]
-        [Comment("The id of the order of the status")]
+        [Comment("The ID of the status for the order")]
         public int StatusId { get; set; }
 
         [Required]
         [ForeignKey(nameof(StatusId))]
-        public Status Status { get; set; } = null!;
+        public virtual Status Status { get; set; } = null!;
     }
 }

@@ -50,7 +50,7 @@ namespace Website.Data.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Product_Category");
 
-            builder.Property(p => p.IsAvaliable)
+            builder.Property(p => p.IsAvailable)
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasComment("The true/false statement for the product availability");
 
@@ -69,7 +69,7 @@ namespace Website.Data.Configurations
                     StockQuantity = 1,
                     CategoryTypeId = 1,
                     ProductTypeId = 1,
-                    IsAvaliable = true,
+                    IsAvailable = true,
                 },
                 new Product()
                 {
@@ -79,7 +79,7 @@ namespace Website.Data.Configurations
                     StockQuantity = 1,
                     CategoryTypeId = 1,
                     ProductTypeId = 1,
-                    IsAvaliable = true,
+                    IsAvailable = true,
                 },
             };
 

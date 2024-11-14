@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Common;
+using Website.Data.Models.Enums;
 
 namespace Website.Data.Models
 {
@@ -13,7 +15,7 @@ namespace Website.Data.Models
     public class Product
     {
         [Key]
-        [Comment("The id of the product")]
+        [Comment("The ID of the product")]
         public Guid ProductId { get; set; }
 
         [Required]
@@ -26,18 +28,19 @@ namespace Website.Data.Models
         [Comment("The price of the product")]
         public decimal ProductPrice { get; set; }
 
-        [Comment("The product details")]
+        [Comment("The product description")]
         [MinLength(ProductDetailsMinLength)]
         [MaxLength(ProductDetailsMaxLength)]
         public string? ProductDescription { get; set; }
 
-        [Comment("The url of the product image")]
+        [Comment("The URL of the product image")]
         public string? ImageUrl { get; set; }
 
-        [Comment("The quantity of the product")]
+        [Comment("The stock quantity of the product")]
         public int StockQuantity { get; set; }
 
         [Required]
+        [Comment("The type ID of the product")]
         public int ProductTypeId { get; set; }
 
         [Required]
@@ -53,9 +56,7 @@ namespace Website.Data.Models
         [ForeignKey(nameof(CategoryTypeId))]
         public Category Category { get; set; } = null!;
 
-        [Comment("The true/false statement for the product avaliability")]
-        public bool IsAvaliable { get; set; }
-
-        // Discount
+        [Comment("Indicates if the product is available")]
+        public bool IsAvailable { get; set; }
     }
 }

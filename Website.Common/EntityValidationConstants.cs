@@ -6,6 +6,7 @@
         {
             public const byte CustomerNameMinLength = 2;
             public const byte CustomerNameMaxLength = 40;
+            public const string EmailValidation = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         }
 
         public static class Product

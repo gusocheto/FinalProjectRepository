@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Website.Common;
 
 namespace Website.Data.Models
 {
@@ -9,7 +10,7 @@ namespace Website.Data.Models
     public class CustomerUser
     {
         [Key]
-        [Comment("The id of the customer")]
+        [Comment("The ID of the customer")]
         public Guid CustomerId { get; set; }
 
         [Required]
@@ -19,28 +20,28 @@ namespace Website.Data.Models
         public string Username { get; set; } = null!;
 
         [Required]
-        [Comment("The password of the customer")]
-        public string Password { get; set; } = null!;
+        [Comment("The password of the customer (hashed)")]
+        public string Password { get; set; } = null!; // Store as a hash in production
 
         [Required]
-        [Comment("The email of the user")]
-        //[RegularExpression] potential
+        [Comment("The email of the customer")]
+        [RegularExpression(EmailValidation, ErrorMessage = "Invalid email format")]
         public string Email { get; set; } = null!;
 
         [Required]
         [Comment("The address of the customer")]
         public string Address { get; set; } = null!;
 
-        //Add CartId
         [Required]
-        [Comment("The id of the user's cart")]
+        [Comment("The ID of the user's cart")]
         public int CartId { get; set; }
 
         [Required]
         [ForeignKey(nameof(CartId))]
         public Cart Cart { get; set; } = null!;
 
+        [Comment("The collection of orders made by the customer")]
         public virtual IEnumerable<Order> Orders { get; set; } 
-                = new HashSet<Order>();
+            = new HashSet<Order>();
     }
 }

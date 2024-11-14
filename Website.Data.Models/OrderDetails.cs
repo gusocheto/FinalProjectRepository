@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Common;
 
 namespace Website.Data.Models
 {
@@ -13,19 +14,20 @@ namespace Website.Data.Models
     public class OrderDetails
     {
         [Key]
-        [Comment("The id of the order details")]
+        [Comment("The ID of the order details")]
         public int OrderDetailsID { get; set; }
 
         [Required]
-        [Comment("The id of the current user")]
+        [Comment("The ID of the customer associated with the order")]
         public Guid CustomerUserID { get; set; }
 
         [Required]
         [ForeignKey(nameof(CustomerUserID))]
+        [Comment("The customer associated with the order")]
         public CustomerUser CustomerUser { get; set; } = null!;
 
         [Required]
-        [Comment("The shipping address of the order")]
+        [Comment("The shipping address for the order")]
         public string ShippingAddress { get; set; } = null!;
 
         [Required]
@@ -41,11 +43,11 @@ namespace Website.Data.Models
         public string Country { get; set; } = null!;
 
         [Required]
-        [Comment("The zip code of the city")]
+        [Comment("The zip code for the shipping address")]
         public string ZipCode { get; set; } = null!;
 
         [Required]
-        [Comment("The order price")]
+        [Comment("The total amount paid for the order")]
         public decimal AmountPaid { get; set; }
     }
 }

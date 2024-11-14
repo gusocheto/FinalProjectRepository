@@ -22,7 +22,7 @@ namespace Website.Data.Configurations
                 .IsRequired();
 
             builder.HasOne(cp => cp.Cart)
-                .WithMany(c => c.CartProducts)
+                .WithMany(c => c.CartItems)
                 .HasForeignKey(cp => cp.CartId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CartProducts_Cart");
