@@ -1,8 +1,39 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Website.ViewModels.ProductViewModels
+@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <!-- Best Sellers Section -->
+    <section class="best-sellers">
+        <img><strong>Image</strong> @Model.ImageUrl</img>
+        <p><strong>Name:</strong> @Model.ProductName</p>
+        <p><strong>Price:</strong> @Model.ProductPrice</p>
+        <p><strong>Description:</strong> @Model.ProductDescription minutes</p>
+
+        <a asp-action="Index" class="btn btn-primary">Back to All Movies</a>
+    </section>
+
+    <!-- Category Sections -->
+    <section class="categories">
+        <div class="category-row">
+            <div class="category-item">Мъже</div>
+            <div class="category-item">Жени</div>
+        </div>
+        <div class="category-row">
+            <div class="category-item">Деца</div>
+            <div class="category-item">Аксесоари</div>
+        </div>
+    </section>
+</body>
+</html>
