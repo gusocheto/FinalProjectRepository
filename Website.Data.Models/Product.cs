@@ -1,13 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Website.Common;
-using Website.Data.Models.Enums;
 
 namespace Website.Data.Models
 {
@@ -16,7 +9,7 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The ID of the product")]
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; set; } = Guid.NewGuid();
 
         [Required]
         [Comment("The name of the product")]

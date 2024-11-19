@@ -54,7 +54,7 @@ namespace Website.Data.Configurations
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasComment("The true/false statement for the product availability");
 
-            //builder.HasData(this.GenerateProducs());
+            builder.HasData(this.GenerateProducs());
         }
 
         private IEnumerable<Product> GenerateProducs()
