@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Data.Models.Enums;
+using Website.Data.Models;
 
 namespace Website.ViewModels.ProductViewModels
 {
@@ -17,6 +19,11 @@ namespace Website.ViewModels.ProductViewModels
         public string? ProductDescription { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        [Required]
+        public int CategoryId { get; set; }
+
+        public List<Category> Categories { get; set; } = new List<Category>();
 
     }
 }

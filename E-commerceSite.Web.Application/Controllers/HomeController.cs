@@ -1,6 +1,10 @@
 using E_commerceSite.Web.Application.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
+using Website.Data.Models;
+using Website.Data.Models.Enums;
+using Website.ViewModels.ProductViewModels;
 
 namespace E_commerceSite.Web.Application.Controllers
 {
@@ -26,6 +30,29 @@ namespace E_commerceSite.Web.Application.Controllers
         {
             return View();
         }
+        public IActionResult Men()
+        {
+            return View();
+        }
+        public IActionResult AddProduct()
+        {
+            // Assuming you have an enum for categories
+            var categories = Enum.GetValues(typeof(CategoryEnumaration))
+                                 .Cast<CategoryEnumaration>()
+                                 .Select(e => new Category
+                                 {
+                                     CategoryId = (int)e,
+                                     CategoryType = e
+                                 }).ToList();
+
+            var model = new ProductViewModel
+            {
+                Categories = categories // Populating the categories
+            };
+
+            return View(model);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
