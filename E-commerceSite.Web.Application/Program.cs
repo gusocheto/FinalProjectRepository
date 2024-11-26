@@ -1,5 +1,6 @@
 using E_commerceSite.Web.Application.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Website.Data.Models;
 
@@ -25,7 +26,11 @@ namespace E_commerceSite.Web.Application
 
             })
                 .AddRoles<IdentityRole<Guid>>()
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddUserManager<UserManager<ApplicationUser>>()
+                .AddUserStore<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+                
 
             builder.Services.AddControllersWithViews();
 
