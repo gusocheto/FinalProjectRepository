@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Website.Data.Models;
+using Website.Infrastructure.Extensions;
 
 namespace E_commerceSite.Web.Application
 {
@@ -63,6 +64,8 @@ namespace E_commerceSite.Web.Application
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
+
+            app.ApplyMigrations();
 
             app.Run();
         }

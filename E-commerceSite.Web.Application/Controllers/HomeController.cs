@@ -1,7 +1,10 @@
+using E_commerceSite.Web.Application.Data;
 using E_commerceSite.Web.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Globalization;
 using Website.Data.Models;
 using Website.Data.Models.Enums;
 using Website.ViewModels.ProductViewModels;
@@ -11,10 +14,12 @@ namespace E_commerceSite.Web.Application.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            this.context = context;
         }
 
         public IActionResult Index()
@@ -32,8 +37,19 @@ namespace E_commerceSite.Web.Application.Controllers
         }
         public IActionResult Men()
         {
-            return View();
+            var model = context.Products
+                .Select(p => new ProductPageViewModel()
+                {
+                    Id = p.ProductId
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(model);
+
         }
+
+        [HttpGet]
         public IActionResult AddProduct()
         {
             // Assuming you have an enum for categories
@@ -62,11 +78,48 @@ namespace E_commerceSite.Web.Application.Controllers
             return View(model);
         }
 
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        public async Task<IActionResult> Add(ProductViewModel model)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!ModelState.IsValid)
+            {
+                // If the model is invalid, reload dropdown data and return the view.
+                model.Categories = Enum.GetValues(typeof(CategoryEnumaration))
+                                       .Cast<CategoryEnumaration>()
+                                       .Select(e => new Category
+                                       {
+                                           CategoryId = (int)e,
+                                           CategoryType = e
+                                       }).ToList();
+
+                model.ProductTypes = Enum.GetValues(typeof(ProductCategorizationEnumaration))
+                                          .Cast<ProductCategorizationEnumaration>()
+                                          .Select(e => new ProductType
+                                          {
+                                              ProductTypeId = (int)e,
+                                              ProductTypeName = e
+                                          }).ToList();
+
+                return View(model);
+            }
+
+            // Map the ProductViewModel to Product entity
+            Product product = new Product
+            {
+                ProductName = model.ProductName,
+                ProductPrice = model.ProductPrice,
+                ProductDescription = model.ProductDescription,
+                ImageUrl = model.ImageUrl,
+                StockQuantity = model.ProductQuantity,
+                CategoryTypeId = model.CategoryId,
+                ProductTypeId = model.ProductTypeId,
+            };
+
+            // Add the product to the database
+            await context.Products.AddAsync(product);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index)); // Redirect to the product list or home page
         }
     }
 }

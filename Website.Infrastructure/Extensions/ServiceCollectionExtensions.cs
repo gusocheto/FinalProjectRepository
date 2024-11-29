@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using E_commerceSite.Web.Application.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Website.Data.Models;
-using Website.Data.Models.Enums;
 using Website.Data.Repository;
 using Website.Data.Repository.Interfaces;
 
@@ -9,6 +11,17 @@ namespace Website.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IApplicationBuilder ApplyMigrations(this IApplicationBuilder app)
+        {
+            using IServiceScope serviceScope = app.ApplicationServices.CreateScope();
+
+            ApplicationDbContext dbContext = serviceScope
+                .ServiceProvider
+                .GetRequiredService<ApplicationDbContext>()!;
+            dbContext.Database.Migrate();
+
+            return app;
+        }
         public static void RegisterRepositories(this IServiceCollection services, Assembly modelsAssembly)
         {
             // TODO: Re-write the implementation in such way that the user must create a single class for every repository

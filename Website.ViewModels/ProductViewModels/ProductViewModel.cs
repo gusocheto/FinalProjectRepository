@@ -12,6 +12,7 @@ namespace Website.ViewModels.ProductViewModels
 {
     public class ProductViewModel
     {
+        public Guid Id { get; set; }
         public string ProductName { get; set; } = null!;
 
         public decimal ProductPrice { get; set; }
@@ -19,6 +20,8 @@ namespace Website.ViewModels.ProductViewModels
         public string? ProductDescription { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        public int ProductQuantity { get; set; }
 
         [Required]
         public int CategoryId { get; set; }
