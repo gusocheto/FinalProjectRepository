@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Website.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241109194706_InitailMigration")]
-    partial class InitailMigration
+    [Migration("20241127211645_customerUser")]
+    partial class customerUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,11 @@ namespace Website.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -52,7 +53,7 @@ namespace Website.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,9 +67,8 @@ namespace Website.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -77,10 +77,90 @@ namespace Website.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Website.Data.Models.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -142,91 +222,6 @@ namespace Website.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
-                });
-
             modelBuilder.Entity("Website.Data.Models.Cart", b =>
                 {
                     b.Property<int>("CartID")
@@ -244,10 +239,12 @@ namespace Website.Data.Migrations
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
                     b.Property<int>("CartId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasComment("The ID of the cart to which this item belongs");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The ID of the product in the cart");
 
                     b.HasKey("CartId", "ProductId");
 
@@ -267,11 +264,93 @@ namespace Website.Data.Migrations
 
                     b.Property<int>("CategoryType")
                         .HasColumnType("int")
-                        .HasComment("The name of the categoryType");
+                        .HasComment("The name of the categoryType (as an enum)");
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryType = 10
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryType = 20
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryType = 30
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryType = 40
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryType = 50
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            CategoryType = 60
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            CategoryType = 70
+                        },
+                        new
+                        {
+                            CategoryId = 8,
+                            CategoryType = 80
+                        },
+                        new
+                        {
+                            CategoryId = 9,
+                            CategoryType = 90
+                        },
+                        new
+                        {
+                            CategoryId = 10,
+                            CategoryType = 100
+                        },
+                        new
+                        {
+                            CategoryId = 11,
+                            CategoryType = 110
+                        },
+                        new
+                        {
+                            CategoryId = 12,
+                            CategoryType = 120
+                        },
+                        new
+                        {
+                            CategoryId = 13,
+                            CategoryType = 130
+                        },
+                        new
+                        {
+                            CategoryId = 14,
+                            CategoryType = 140
+                        },
+                        new
+                        {
+                            CategoryId = 15,
+                            CategoryType = 150
+                        },
+                        new
+                        {
+                            CategoryId = 16,
+                            CategoryType = 160
+                        });
                 });
 
             modelBuilder.Entity("Website.Data.Models.CustomerUser", b =>
@@ -300,6 +379,9 @@ namespace Website.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The password of the customer");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -310,6 +392,8 @@ namespace Website.Data.Migrations
 
                     b.HasIndex("CartId")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CustomerUsers");
                 });
@@ -407,7 +491,7 @@ namespace Website.Data.Migrations
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasComment("The id of the product");
+                        .HasComment("The ID of the product");
 
                     b.Property<int>("CategoryTypeId")
                         .HasColumnType("int");
@@ -416,7 +500,7 @@ namespace Website.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The URL of the product image");
 
-                    b.Property<bool>("IsAvaliable")
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("bit")
                         .HasComment("The true/false statement for the product availability");
 
@@ -436,7 +520,8 @@ namespace Website.Data.Migrations
                         .HasComment("The price of the product");
 
                     b.Property<int>("ProductTypeId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasComment("The type ID of the product");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int")
@@ -449,24 +534,70 @@ namespace Website.Data.Migrations
                     b.HasIndex("ProductTypeId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = new Guid("f92f2db5-16db-4382-81f7-5b18557c6a68"),
+                            CategoryTypeId = 1,
+                            IsAvailable = true,
+                            ProductDescription = "Lorem ipsum is the best",
+                            ProductName = "Chair",
+                            ProductPrice = 30m,
+                            ProductTypeId = 1,
+                            StockQuantity = 1
+                        },
+                        new
+                        {
+                            ProductId = new Guid("4ce544ca-7f8b-4b25-95b2-1627f2784c12"),
+                            CategoryTypeId = 1,
+                            IsAvailable = true,
+                            ProductDescription = "Lorem ipsum is the best",
+                            ProductName = "Wall",
+                            ProductPrice = 50m,
+                            ProductTypeId = 1,
+                            StockQuantity = 1
+                        });
                 });
 
             modelBuilder.Entity("Website.Data.Models.ProductType", b =>
                 {
-                    b.Property<int>("GenderId")
+                    b.Property<int>("ProductTypeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasComment("Id of the gender type");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenderId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductTypeId"));
 
                     b.Property<int>("ProductTypeName")
                         .HasColumnType("int")
                         .HasComment("The gender declaration for a product");
 
-                    b.HasKey("GenderId");
+                    b.HasKey("ProductTypeId");
 
-                    b.ToTable("ProductTypes");
+                    b.ToTable("ProductTypes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ProductTypeId = 1,
+                            ProductTypeName = 1
+                        },
+                        new
+                        {
+                            ProductTypeId = 2,
+                            ProductTypeName = 2
+                        },
+                        new
+                        {
+                            ProductTypeId = 3,
+                            ProductTypeName = 3
+                        },
+                        new
+                        {
+                            ProductTypeId = 4,
+                            ProductTypeName = 4
+                        });
                 });
 
             modelBuilder.Entity("Website.Data.Models.Status", b =>
@@ -487,51 +618,51 @@ namespace Website.Data.Migrations
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Website.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Website.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Website.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Website.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -541,7 +672,7 @@ namespace Website.Data.Migrations
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
                     b.HasOne("Website.Data.Models.Cart", "Cart")
-                        .WithMany("CartProducts")
+                        .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -568,7 +699,15 @@ namespace Website.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CustomerUser_Cart");
 
+                    b.HasOne("Website.Data.Models.ApplicationUser", "User")
+                        .WithMany("Tickets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cart");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Website.Data.Models.Order", b =>
@@ -640,9 +779,14 @@ namespace Website.Data.Migrations
                     b.Navigation("ProductType");
                 });
 
+            modelBuilder.Entity("Website.Data.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
             modelBuilder.Entity("Website.Data.Models.Cart", b =>
                 {
-                    b.Navigation("CartProducts");
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Website.Data.Models.CustomerUser", b =>

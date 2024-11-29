@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Website.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitailMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +17,7 @@ namespace Website.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -29,7 +31,7 @@ namespace Website.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -68,7 +70,7 @@ namespace Website.Data.Migrations
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false, comment: "The id of the categoryType")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryType = table.Column<int>(type: "int", nullable: false, comment: "The name of the categoryType")
+                    CategoryType = table.Column<int>(type: "int", nullable: false, comment: "The name of the categoryType (as an enum)")
                 },
                 constraints: table =>
                 {
@@ -79,13 +81,13 @@ namespace Website.Data.Migrations
                 name: "ProductTypes",
                 columns: table => new
                 {
-                    GenderId = table.Column<int>(type: "int", nullable: false, comment: "Id of the gender type")
+                    ProductTypeId = table.Column<int>(type: "int", nullable: false, comment: "Id of the gender type")
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductTypeName = table.Column<int>(type: "int", nullable: false, comment: "The gender declaration for a product")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductTypes", x => x.GenderId);
+                    table.PrimaryKey("PK_ProductTypes", x => x.ProductTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,7 +109,7 @@ namespace Website.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -128,7 +130,7 @@ namespace Website.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -147,10 +149,10 @@ namespace Website.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,8 +169,8 @@ namespace Website.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,9 +193,9 @@ namespace Website.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -233,15 +235,15 @@ namespace Website.Data.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The id of the product"),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product"),
                     ProductName = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false, comment: "The name of the product"),
                     ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false, comment: "The price of the product"),
                     ProductDescription = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true, comment: "The product details"),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "The URL of the product image"),
                     StockQuantity = table.Column<int>(type: "int", nullable: false, comment: "The quantity of the product"),
-                    ProductTypeId = table.Column<int>(type: "int", nullable: false),
+                    ProductTypeId = table.Column<int>(type: "int", nullable: false, comment: "The type ID of the product"),
                     CategoryTypeId = table.Column<int>(type: "int", nullable: false),
-                    IsAvaliable = table.Column<bool>(type: "bit", nullable: false, comment: "The true/false statement for the product availability")
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false, comment: "The true/false statement for the product availability")
                 },
                 constraints: table =>
                 {
@@ -256,7 +258,7 @@ namespace Website.Data.Migrations
                         name: "FK_Product_ProductType",
                         column: x => x.ProductTypeId,
                         principalTable: "ProductTypes",
-                        principalColumn: "GenderId",
+                        principalColumn: "ProductTypeId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -288,8 +290,8 @@ namespace Website.Data.Migrations
                 name: "CartsProducts",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CartId = table.Column<int>(type: "int", nullable: false, comment: "The ID of the cart to which this item belongs"),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product in the cart")
                 },
                 constraints: table =>
                 {
@@ -347,6 +349,49 @@ namespace Website.Data.Migrations
                         principalTable: "CustomerUsers",
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "CategoryType" },
+                values: new object[,]
+                {
+                    { 1, 10 },
+                    { 2, 20 },
+                    { 3, 30 },
+                    { 4, 40 },
+                    { 5, 50 },
+                    { 6, 60 },
+                    { 7, 70 },
+                    { 8, 80 },
+                    { 9, 90 },
+                    { 10, 100 },
+                    { 11, 110 },
+                    { 12, 120 },
+                    { 13, 130 },
+                    { 14, 140 },
+                    { 15, 150 },
+                    { 16, 160 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProductTypes",
+                columns: new[] { "ProductTypeId", "ProductTypeName" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 },
+                    { 4, 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "ProductId", "CategoryTypeId", "ImageUrl", "IsAvailable", "ProductDescription", "ProductName", "ProductPrice", "ProductTypeId", "StockQuantity" },
+                values: new object[,]
+                {
+                    { new Guid("2ce41b6e-b939-40c7-a013-0837bbd93ef9"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 },
+                    { new Guid("ef50d9a6-7c25-4bc4-90ea-f591657df05e"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 }
                 });
 
             migrationBuilder.CreateIndex(
