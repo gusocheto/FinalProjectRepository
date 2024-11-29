@@ -114,7 +114,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 ProductDescription = model.ProductDescription,
                 ImageUrl = model.ImageUrl,
                 StockQuantity = model.ProductQuantity,
-                CategoryTypeId = model.CategoryId,
+                CategoryTypeId = model.CategoryId / 10,
                 ProductTypeId = model.ProductTypeId,
             };
 
