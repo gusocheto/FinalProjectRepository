@@ -25,5 +25,10 @@ namespace Website.ViewModels.ProductViewModels
 
         public List<Category> Categories { get; set; } = new List<Category>();
 
+        [Required]
+        public int ProductTypeId { get; set; }
+
+        public List<ProductType> ProductTypes { get; set; } = new List<ProductType>();
+
     }
 }

@@ -230,7 +230,7 @@ namespace Website.Data.Migrations
 
                     b.HasKey("CartID");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
@@ -247,7 +247,7 @@ namespace Website.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartsProducts");
+                    b.ToTable("CartsProducts", (string)null);
                 });
 
             modelBuilder.Entity("Website.Data.Models.Category", b =>
@@ -392,7 +392,7 @@ namespace Website.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CustomerUsers");
+                    b.ToTable("CustomerUsers", (string)null);
                 });
 
             modelBuilder.Entity("Website.Data.Models.Order", b =>
@@ -434,7 +434,7 @@ namespace Website.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Website.Data.Models.OrderDetails", b =>
@@ -530,7 +530,7 @@ namespace Website.Data.Migrations
 
                     b.HasIndex("ProductTypeId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -612,7 +612,7 @@ namespace Website.Data.Migrations
 
                     b.HasKey("StatusId");
 
-                    b.ToTable("Statuses");
+                    b.ToTable("Statuses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

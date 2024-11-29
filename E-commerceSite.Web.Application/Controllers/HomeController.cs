@@ -45,9 +45,18 @@ namespace E_commerceSite.Web.Application.Controllers
                                      CategoryType = e
                                  }).ToList();
 
+            var productTypes = Enum.GetValues(typeof(ProductCategorizationEnumaration))
+                           .Cast<ProductCategorizationEnumaration>()
+                           .Select(e => new ProductType
+                           {
+                               ProductTypeId = (int)e,
+                               ProductTypeName = e
+                           }).ToList();
+
             var model = new ProductViewModel
             {
-                Categories = categories // Populating the categories
+                Categories = categories, // Populating the categories
+                ProductTypes = productTypes
             };
 
             return View(model);
