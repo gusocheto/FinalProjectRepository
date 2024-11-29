@@ -40,10 +40,13 @@ namespace E_commerceSite.Web.Application.Controllers
             var model = context.Products
                 .Select(p => new ProductPageViewModel()
                 {
-                    Id = p.ProductId
+                    Id = p.ProductId,
+                    ProductName = p.ProductName,
+                    ProductImageUrl = p.ImageUrl,
+                    ProductPrice = p.ProductPrice
                 })
                 .AsNoTracking()
-                .ToListAsync();
+                .ToList();
 
             return View(model);
 
@@ -119,7 +122,7 @@ namespace E_commerceSite.Web.Application.Controllers
             await context.Products.AddAsync(product);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index)); // Redirect to the product list or home page
+            return RedirectToAction(nameof(Men)); // Redirect to the product list or home page
         }
     }
 }
