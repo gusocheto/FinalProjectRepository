@@ -51,5 +51,8 @@ namespace Website.Data.Models
 
         [Comment("Indicates if the product is available")]
         public bool IsAvailable { get; set; }
+
+        public ICollection<CartProducts> CartProducts { get; set; } =
+             new List<CartProducts>();
     }
 }

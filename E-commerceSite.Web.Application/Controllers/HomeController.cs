@@ -1,10 +1,12 @@
 using E_commerceSite.Web.Application.Data;
 using E_commerceSite.Web.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Globalization;
+using System.Security.Claims;
 using Website.Data.Models;
 using Website.Data.Models.Enums;
 using Website.ViewModels.ProductViewModels;
@@ -55,7 +57,6 @@ namespace E_commerceSite.Web.Application.Controllers
         [HttpGet]
         public IActionResult AddProduct()
         {
-            // Assuming you have an enum for categories
             var categories = Enum.GetValues(typeof(CategoryEnumaration))
                                  .Cast<CategoryEnumaration>()
                                  .Select(e => new Category
@@ -74,7 +75,7 @@ namespace E_commerceSite.Web.Application.Controllers
 
             var model = new ProductViewModel
             {
-                Categories = categories, // Populating the categories
+                Categories = categories,
                 ProductTypes = productTypes
             };
 
@@ -86,7 +87,6 @@ namespace E_commerceSite.Web.Application.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // If the model is invalid, reload dropdown data and return the view.
                 model.Categories = Enum.GetValues(typeof(CategoryEnumaration))
                                        .Cast<CategoryEnumaration>()
                                        .Select(e => new Category
@@ -106,7 +106,6 @@ namespace E_commerceSite.Web.Application.Controllers
                 return View(model);
             }
 
-            // Map the ProductViewModel to Product entity
             Product product = new Product
             {
                 ProductName = model.ProductName,
@@ -118,11 +117,91 @@ namespace E_commerceSite.Web.Application.Controllers
                 ProductTypeId = model.ProductTypeId,
             };
 
-            // Add the product to the database
             await context.Products.AddAsync(product);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Men)); // Redirect to the product list or home page
+            return RedirectToAction(nameof(Men));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductDetails(Guid id)
+        {
+            var model = await context.Products
+                .Where(p => p.ProductId == id)
+                .Where(p => p.IsAvailable == false)
+                .AsNoTracking()
+                .Select(p => new ProductDescriptionViewModel()
+                {
+                    Id = p.ProductId,
+                    ImageUrl = p.ImageUrl,
+                    ProductName = p.ProductName,
+                    Description = p.ProductDescription,
+                    Price = p.ProductPrice,
+                    CategoryName = p.Category.CategoryType.ToString(),
+                    Quantity = p.StockQuantity,
+                    IsAvailable = p.IsAvailable,
+                })
+                .FirstOrDefaultAsync();
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Cart()
+        {
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            var model = await context.Products
+                .Where(p => p.IsAvailable == true)
+                .Where(p => p.CartProducts.Any(pc => pc.ProductId.ToString() == currentUserId))
+                .Select(p => new ProductCartViewModel()
+                {
+                    Id = p.ProductId,
+                    ImageUrl = p.ImageUrl,
+                    ProductName = p.ProductName,
+                    Price = p.ProductPrice,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(Guid id)
+        {
+            Product? entity = await context.Products
+                .Where(p => p.ProductId == id)
+                .Include(p => p.CartProducts)
+                .FirstOrDefaultAsync();
+
+            if (entity == null || entity.IsAvailable == false)
+            {
+                throw new ArgumentException("Invalid id");
+            }
+
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            if (entity.CartProducts.Any(p => p.ProductId.ToString() == currentUserId))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            entity.CartProducts.Add(new CartProducts()
+            {
+                CartId = currentUserId,
+                ProductId = entity.Id,
+            });
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+
+        private string? GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }
