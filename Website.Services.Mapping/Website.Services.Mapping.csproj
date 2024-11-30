@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Website.Data.Models\Website.Data.Models.csproj" />
-    <ProjectReference Include="..\Website.Services.Mapping\Website.Services.Mapping.csproj" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
 </Project>
