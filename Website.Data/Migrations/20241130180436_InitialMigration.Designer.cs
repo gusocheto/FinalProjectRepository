@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Website.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129210633_test")]
-    partial class test
+    [Migration("20241130180436_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,12 +224,10 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.Cart", b =>
                 {
-                    b.Property<int>("CartID")
+                    b.Property<Guid>("CartID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The id of the cart");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartID"));
 
                     b.HasKey("CartID");
 
@@ -238,17 +236,22 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The ID of the cart to which this item belongs");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier")
                         .HasComment("The ID of the product in the cart");
 
+                    b.Property<Guid?>("ProductId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("CartId", "ProductId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("CartsProducts");
                 });
@@ -365,8 +368,8 @@ namespace Website.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The address of the customer");
 
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The id of the user's cart");
 
                     b.Property<string>("Email")
@@ -538,7 +541,7 @@ namespace Website.Data.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = new Guid("bb51e33e-511f-4e8f-a335-03b9307d84e5"),
+                            ProductId = new Guid("b638562f-6068-4ba4-85cc-f620289452f4"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -549,7 +552,7 @@ namespace Website.Data.Migrations
                         },
                         new
                         {
-                            ProductId = new Guid("ab96b478-2dc7-4433-8e76-70c42aeaefe0"),
+                            ProductId = new Guid("952a50c0-9e38-455b-a71a-00362f2dedac"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -685,6 +688,10 @@ namespace Website.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CartProducts_Product");
 
+                    b.HasOne("Website.Data.Models.Product", null)
+                        .WithMany("CartProducts")
+                        .HasForeignKey("ProductId1");
+
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
@@ -792,6 +799,11 @@ namespace Website.Data.Migrations
             modelBuilder.Entity("Website.Data.Models.CustomerUser", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Website.Data.Models.Product", b =>
+                {
+                    b.Navigation("CartProducts");
                 });
 #pragma warning restore 612, 618
         }

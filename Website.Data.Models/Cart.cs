@@ -8,7 +8,7 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The ID of the cart")]
-        public int CartID { get; set; }
+        public Guid CartID { get; set; }
 
         [Required]
         [Comment("The collection of items in the cart")]

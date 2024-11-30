@@ -34,7 +34,7 @@ namespace Website.Data.Models
 
         [Required]
         [Comment("The ID of the user's cart")]
-        public int CartId { get; set; }
+        public Guid CartId { get; set; }
 
         [Required]
         [ForeignKey(nameof(CartId))]

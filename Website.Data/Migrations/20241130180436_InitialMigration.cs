@@ -56,8 +56,7 @@ namespace Website.Data.Migrations
                 name: "Carts",
                 columns: table => new
                 {
-                    CartID = table.Column<int>(type: "int", nullable: false, comment: "The id of the cart")
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    CartID = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The id of the cart")
                 },
                 constraints: table =>
                 {
@@ -218,7 +217,8 @@ namespace Website.Data.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The password of the customer"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The email of the user"),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The address of the customer"),
-                    CartId = table.Column<int>(type: "int", nullable: false, comment: "The id of the user's cart")
+                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The id of the user's cart"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -228,6 +228,12 @@ namespace Website.Data.Migrations
                         column: x => x.CartId,
                         principalTable: "Carts",
                         principalColumn: "CartID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -290,8 +296,9 @@ namespace Website.Data.Migrations
                 name: "CartsProducts",
                 columns: table => new
                 {
-                    CartId = table.Column<int>(type: "int", nullable: false, comment: "The ID of the cart to which this item belongs"),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product in the cart")
+                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the cart to which this item belongs"),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product in the cart"),
+                    ProductId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,6 +315,11 @@ namespace Website.Data.Migrations
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartsProducts_Products_ProductId1",
+                        column: x => x.ProductId1,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
                 });
 
             migrationBuilder.CreateTable(
@@ -390,8 +402,8 @@ namespace Website.Data.Migrations
                 columns: new[] { "ProductId", "CategoryTypeId", "ImageUrl", "IsAvailable", "ProductDescription", "ProductName", "ProductPrice", "ProductTypeId", "StockQuantity" },
                 values: new object[,]
                 {
-                    { new Guid("2ce41b6e-b939-40c7-a013-0837bbd93ef9"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 },
-                    { new Guid("ef50d9a6-7c25-4bc4-90ea-f591657df05e"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 }
+                    { new Guid("952a50c0-9e38-455b-a71a-00362f2dedac"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 },
+                    { new Guid("b638562f-6068-4ba4-85cc-f620289452f4"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -439,10 +451,20 @@ namespace Website.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartsProducts_ProductId1",
+                table: "CartsProducts",
+                column: "ProductId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomerUsers_CartId",
                 table: "CustomerUsers",
                 column: "CartId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerUsers_UserId",
+                table: "CustomerUsers",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_CustomerUserID",
@@ -508,9 +530,6 @@ namespace Website.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
@@ -530,6 +549,9 @@ namespace Website.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

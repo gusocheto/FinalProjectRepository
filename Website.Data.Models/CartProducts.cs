@@ -13,7 +13,7 @@ namespace Website.Data.Models
     {
         [Required]
         [Comment("The ID of the cart to which this item belongs")]
-        public int CartId { get; set; }
+        public Guid CartId { get; set; }
 
         [ForeignKey(nameof(CartId))]
         public Cart Cart { get; set; } = null!;

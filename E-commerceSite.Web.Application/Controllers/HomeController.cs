@@ -175,7 +175,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 .Include(p => p.CartProducts)
                 .FirstOrDefaultAsync();
 
-            if (entity == null || entity.IsAvailable == false)
+            if (entity == null || entity.IsAvailable == true)
             {
                 throw new ArgumentException("Invalid id");
             }
@@ -187,10 +187,28 @@ namespace E_commerceSite.Web.Application.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            Guid currGuid;
+
+            if (!Guid.TryParse(currentUserId, out currGuid))
+            {
+                // Handle invalid GUID, e.g., return an error or throw an exception
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            //if(!context.Carts.Any(x => x.CartID == currGuid))
+            //{
+            //    Cart newCart = new Cart()
+            //    {
+            //        CartID = currGuid,
+            //        CartItems = null
+            //    };
+            //    await context.AddAsync(newCart);
+            //}
+
             entity.CartProducts.Add(new CartProducts()
             {
-                CartId = currentUserId,
-                ProductId = entity.Id,
+                CartId = currGuid,
+                ProductId = entity.ProductId,
             });
 
             await context.SaveChangesAsync();

@@ -221,12 +221,10 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.Cart", b =>
                 {
-                    b.Property<int>("CartID")
+                    b.Property<Guid>("CartID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The id of the cart");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartID"));
 
                     b.HasKey("CartID");
 
@@ -235,8 +233,8 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The ID of the cart to which this item belongs");
 
                     b.Property<Guid>("ProductId")
@@ -367,8 +365,8 @@ namespace Website.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The address of the customer");
 
-                    b.Property<int>("CartId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier")
                         .HasComment("The id of the user's cart");
 
                     b.Property<string>("Email")
@@ -540,7 +538,7 @@ namespace Website.Data.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = new Guid("a23f8edd-5f91-4946-ae81-c1c4b364ce29"),
+                            ProductId = new Guid("b638562f-6068-4ba4-85cc-f620289452f4"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -551,7 +549,7 @@ namespace Website.Data.Migrations
                         },
                         new
                         {
-                            ProductId = new Guid("a0440eee-107f-48f5-8d3e-6b4769c337a8"),
+                            ProductId = new Guid("952a50c0-9e38-455b-a71a-00362f2dedac"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
