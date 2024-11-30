@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Website.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class IntialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -402,8 +402,8 @@ namespace Website.Data.Migrations
                 columns: new[] { "ProductId", "CategoryTypeId", "ImageUrl", "IsAvailable", "ProductDescription", "ProductName", "ProductPrice", "ProductTypeId", "StockQuantity" },
                 values: new object[,]
                 {
-                    { new Guid("952a50c0-9e38-455b-a71a-00362f2dedac"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 },
-                    { new Guid("b638562f-6068-4ba4-85cc-f620289452f4"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 }
+                    { new Guid("41f15f1e-ffad-4301-ba4a-8e075b6939ef"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 },
+                    { new Guid("d633b20a-7061-4034-8090-dcc0d2204d14"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 }
                 });
 
             migrationBuilder.CreateIndex(

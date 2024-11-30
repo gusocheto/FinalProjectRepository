@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Website.Common\Website.Common.csproj" />
     <ProjectReference Include="..\Website.Data.Models\Website.Data.Models.csproj" />
     <ProjectReference Include="..\Website.Data\Website.Data.csproj" />
   </ItemGroup>

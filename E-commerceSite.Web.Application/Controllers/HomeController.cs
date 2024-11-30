@@ -211,6 +211,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 ProductId = entity.ProductId,
             });
 
+            //entity.CartProducts.Select(x => x.Cart.CartItems.Add(entity));
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Cart));

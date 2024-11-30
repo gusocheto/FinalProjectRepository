@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Website.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241130180436_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241130211510_IntialMigration")]
+    partial class IntialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -541,7 +541,7 @@ namespace Website.Data.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = new Guid("b638562f-6068-4ba4-85cc-f620289452f4"),
+                            ProductId = new Guid("d633b20a-7061-4034-8090-dcc0d2204d14"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -552,7 +552,7 @@ namespace Website.Data.Migrations
                         },
                         new
                         {
-                            ProductId = new Guid("952a50c0-9e38-455b-a71a-00362f2dedac"),
+                            ProductId = new Guid("41f15f1e-ffad-4301-ba4a-8e075b6939ef"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",

@@ -12,6 +12,9 @@ namespace E_commerceSite.Web.Application
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!;
+            string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;
+            string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!;
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -32,7 +35,7 @@ namespace E_commerceSite.Web.Application
                 .AddSignInManager<SignInManager<ApplicationUser>>()
                 .AddUserManager<UserManager<ApplicationUser>>();
 
-
+            //Services
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -58,6 +61,8 @@ namespace E_commerceSite.Web.Application
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.SeedAdministrator(adminEmail, adminUsername, adminPassword);
 
             app.MapControllerRoute(
                 name: "default",

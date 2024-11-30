@@ -38,7 +38,7 @@ namespace Website.Data.Models
 
         [Required]
         [ForeignKey(nameof(CartId))]
-        public Cart Cart { get; set; } = null!;
+        public Cart Cart { get; set; } = new Cart();
 
         public Guid UserId { get; set; }
 
