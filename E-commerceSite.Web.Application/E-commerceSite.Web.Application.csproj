@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Website.Data.Models\Website.Data.Models.csproj" />
     <ProjectReference Include="..\Website.Data\Website.Data.csproj" />
     <ProjectReference Include="..\Website.Infrastructure\Website.Infrastructure.csproj" />
+    <ProjectReference Include="..\Website.Services.Data\Website.Services.Data.csproj" />
     <ProjectReference Include="..\Website.ViewModels\Website.ViewModels.csproj" />
   </ItemGroup>
 
@@ -32,7 +33,6 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
-    <Folder Include="Areas\Admin\Views\UserManagment\" />
   </ItemGroup>
 
 </Project>

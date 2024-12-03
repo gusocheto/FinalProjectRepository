@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Website.ViewModels.Admin.UserManagmentViewModel;
+using Website.ViewModels.Admin.UserManagementViewModel;
 
 namespace Website.Services.Data.Interfaces
 {

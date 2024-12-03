@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Website.Data.Models;
 using Website.Infrastructure.Extensions;
+using Website.Services.Data.Interfaces;
+using Website.Services.Data;
 
 namespace E_commerceSite.Web.Application
 {
