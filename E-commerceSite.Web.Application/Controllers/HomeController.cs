@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Claims;
@@ -87,21 +88,9 @@ namespace E_commerceSite.Web.Application.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.Categories = Enum.GetValues(typeof(CategoryEnumaration))
-                                       .Cast<CategoryEnumaration>()
-                                       .Select(e => new Category
-                                       {
-                                           CategoryId = (int)e,
-                                           CategoryType = e
-                                       }).ToList();
+                model.Categories = GetCategories();
 
-                model.ProductTypes = Enum.GetValues(typeof(ProductCategorizationEnumaration))
-                                          .Cast<ProductCategorizationEnumaration>()
-                                          .Select(e => new ProductType
-                                          {
-                                              ProductTypeId = (int)e,
-                                              ProductTypeName = e
-                                          }).ToList();
+                model.ProductTypes = GetProductTypes();
 
                 return View(model);
             }
@@ -230,10 +219,134 @@ namespace E_commerceSite.Web.Application.Controllers
             return RedirectToAction(nameof(Cart));
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EditProduct(Guid id)
+        {
+            string? currentUserId = GetCurrentUserId();
+
+            var model = await context.Products
+                .Where(p => p.ProductId == id)
+                .Where(p => p.IsAvailable == false)
+                .AsNoTracking()
+                .Select(p => new ProductViewModel()
+                {
+                    ImageUrl = p.ImageUrl,
+                    ProductName = p.ProductName,
+                    ProductDescription = p.ProductDescription,
+                    ProductPrice = p.ProductPrice,
+                    CategoryId = p.CategoryTypeId,
+                    ProductTypeId = p.ProductTypeId,
+                })
+                .FirstOrDefaultAsync();
+
+            model.Categories = GetCategories();
+            model.ProductTypes = GetProductTypes();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditProduct(ProductViewModel model, Guid id)
+        {
+            if (ModelState.IsValid == false)
+            {
+                model.Categories = GetCategories();
+                model.ProductTypes = GetProductTypes();
+
+                return View(model);
+            }
+            
+
+            Product? entity = await context.Products.FindAsync(id);
+
+            if (entity == null || entity.IsAvailable)
+            {
+                throw new ArgumentException("Invalid id");
+            }
+
+            string? currentUserId = GetCurrentUserId();
+
+            entity.ImageUrl = model.ImageUrl;
+            entity.ProductName = model.ProductName;
+            entity.ProductDescription = model.ProductDescription;
+            entity.ProductPrice = model.ProductPrice;
+            entity.CategoryTypeId = model.CategoryId / 10;
+
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ProductDetails), new { model.Id });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            var model = await context.Products
+                .Where(p => p.ProductId == id)
+                .Where(p => p.IsAvailable == true)
+                .AsNoTracking()
+                .Select(p => new DeleteViewModel()
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    SellerId = p.SellerId,
+                    Seller = User.Identity.Name,
+                })
+                .FirstOrDefaultAsync();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Delete(DeleteViewModel model)
+        {
+            Product? product = await context.Products
+                .Where(p => p.Id == model.Id)
+                .Where(p => p.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            if (product != null)
+            {
+                product.IsDeleted = true;
+
+                await context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         private string? GetCurrentUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+
+        private List<Category> GetCategories()
+        {
+            return Enum.GetValues(typeof(CategoryEnumaration))
+                       .Cast<CategoryEnumaration>()
+                       .Select(e => new Category
+                       {
+                           CategoryId = (int)e,
+                           CategoryType = e
+                       })
+                       .ToList();
+        }
+
+        private List<ProductType> GetProductTypes()
+        {
+            return Enum.GetValues(typeof(ProductCategorizationEnumaration))
+                       .Cast<ProductCategorizationEnumaration>()
+                       .Select(e => new ProductType
+                       {
+                           ProductTypeId = (int)e,
+                           ProductTypeName = e
+                       })
+                       .ToList();
+        }
+
     }
 }
