@@ -36,15 +36,15 @@ namespace Website.Data.Configurations
                 .IsRequired()
                 .HasComment("The address of the customer");
 
-            builder.Property(cu => cu.CartId)
-                .IsRequired()
-                .HasComment("The id of the user's cart");
+            //builder.Property(cu => cu.CartId)
+            //    .IsRequired()
+            //    .HasComment("The id of the user's cart");
 
-            builder.HasOne(cu => cu.Cart)
-                .WithOne()
-                .HasForeignKey<CustomerUser>(cu => cu.CartId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_CustomerUser_Cart");
+            //builder.HasOne(cu => cu.Cart)
+            //    .WithOne()
+            //    .HasForeignKey<CustomerUser>(cu => cu.CartId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK_CustomerUser_Cart");
 
             builder.HasMany(cu => cu.Orders)
                 .WithOne()

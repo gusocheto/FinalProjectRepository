@@ -19,11 +19,11 @@ namespace Website.Data.Configurations
                 .IsRequired()
                 .HasComment("The id of the cart");
 
-            builder.HasMany(c => c.CartItems)
-                .WithOne(cp => cp.Cart)
-                .HasForeignKey(cp => cp.CartId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Cart_CartProducts");
+            //builder.HasMany(c => c.CartItems)
+            //    .WithOne(cp => cp.Cart)
+            //    .HasForeignKey(cp => cp.CartId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK_Cart_CartProducts");
         }
     }
 }

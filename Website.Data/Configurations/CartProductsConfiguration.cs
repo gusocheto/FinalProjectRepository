@@ -13,25 +13,23 @@ namespace Website.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<CartProducts> builder)
         {
-            builder.HasKey(cp => new { cp.CartId, cp.ProductId });
+            builder.HasKey(cp => new { cp.ApplicationUserId, cp.ProductId });
 
-            builder.Property(cp => cp.CartId)
-                .IsRequired();
-
-            builder.Property(cp => cp.ProductId)
-                .IsRequired();
-
-            builder.HasOne(cp => cp.Cart)
-                .WithMany(c => c.CartItems)
-                .HasForeignKey(cp => cp.CartId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_CartProducts_Cart");
+            builder.HasOne(cp => cp.ApplicationUser)
+                   .WithMany()
+                   .HasForeignKey(cp => cp.ApplicationUserId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(cp => cp.Product)
-                .WithMany()
-                .HasForeignKey(cp => cp.ProductId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_CartProducts_Product");
+                   .WithMany(p => p.CartProducts)
+                   .HasForeignKey(cp => cp.ProductId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(cp => cp.ApplicationUserId)
+                   .IsRequired();
+
+            builder.Property(cp => cp.ProductId)
+                   .IsRequired();
         }
     }
 }

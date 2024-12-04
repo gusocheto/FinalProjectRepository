@@ -32,13 +32,13 @@ namespace Website.Data.Models
         [Comment("The address of the customer")]
         public string Address { get; set; } = null!;
 
-        [Required]
-        [Comment("The ID of the user's cart")]
-        public Guid CartId { get; set; }
+        //[Required]
+        //[Comment("The ID of the user's cart")]
+        //public Guid CartId { get; set; }
 
-        [Required]
-        [ForeignKey(nameof(CartId))]
-        public Cart Cart { get; set; } = new Cart();
+        //[Required]
+        //[ForeignKey(nameof(CartId))]
+        //public Cart Cart { get; set; } = new Cart();
 
         public Guid UserId { get; set; }
 

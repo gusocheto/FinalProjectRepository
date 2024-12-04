@@ -233,7 +233,7 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
-                    b.Property<Guid>("CartId")
+                    b.Property<Guid>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier")
                         .HasComment("The ID of the cart to which this item belongs");
 
@@ -241,14 +241,9 @@ namespace Website.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasComment("The ID of the product in the cart");
 
-                    b.Property<Guid?>("ProductId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CartId", "ProductId");
+                    b.HasKey("ApplicationUserId", "ProductId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.ToTable("CartsProducts");
                 });
@@ -365,10 +360,6 @@ namespace Website.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The address of the customer");
 
-                    b.Property<Guid>("CartId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("The id of the user's cart");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -389,9 +380,6 @@ namespace Website.Data.Migrations
                         .HasComment("Username of the customer");
 
                     b.HasKey("CustomerId");
-
-                    b.HasIndex("CartId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -538,7 +526,7 @@ namespace Website.Data.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = new Guid("d633b20a-7061-4034-8090-dcc0d2204d14"),
+                            ProductId = new Guid("b22d50d7-a819-457b-901e-5c7288ccd682"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -549,7 +537,7 @@ namespace Website.Data.Migrations
                         },
                         new
                         {
-                            ProductId = new Guid("41f15f1e-ffad-4301-ba4a-8e075b6939ef"),
+                            ProductId = new Guid("9550de2e-4297-4c8b-b442-5e37385d6471"),
                             CategoryTypeId = 1,
                             IsAvailable = true,
                             ProductDescription = "Lorem ipsum is the best",
@@ -671,45 +659,30 @@ namespace Website.Data.Migrations
 
             modelBuilder.Entity("Website.Data.Models.CartProducts", b =>
                 {
-                    b.HasOne("Website.Data.Models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
+                    b.HasOne("Website.Data.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_CartProducts_Cart");
+                        .IsRequired();
 
                     b.HasOne("Website.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_CartProducts_Product");
-
-                    b.HasOne("Website.Data.Models.Product", null)
                         .WithMany("CartProducts")
-                        .HasForeignKey("ProductId1");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Cart");
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Website.Data.Models.CustomerUser", b =>
                 {
-                    b.HasOne("Website.Data.Models.Cart", "Cart")
-                        .WithOne()
-                        .HasForeignKey("Website.Data.Models.CustomerUser", "CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_CustomerUser_Cart");
-
                     b.HasOne("Website.Data.Models.ApplicationUser", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cart");
 
                     b.Navigation("User");
                 });
@@ -786,11 +759,6 @@ namespace Website.Data.Migrations
             modelBuilder.Entity("Website.Data.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Tickets");
-                });
-
-            modelBuilder.Entity("Website.Data.Models.Cart", b =>
-                {
-                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Website.Data.Models.CustomerUser", b =>

@@ -10,8 +10,8 @@ namespace Website.Data.Models
         [Comment("The ID of the cart")]
         public Guid CartID { get; set; }
 
-        [Required]
-        [Comment("The collection of items in the cart")]
-        public virtual ICollection<CartProducts> CartItems { get; set; } = new List<CartProducts>();
+        //[Required]
+        //[Comment("The collection of items in the cart")]
+        //public virtual ICollection<CartProducts> CartItems { get; set; } = new List<CartProducts>();
     }
 }

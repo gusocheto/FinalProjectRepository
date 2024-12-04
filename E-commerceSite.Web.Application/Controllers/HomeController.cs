@@ -152,8 +152,8 @@ namespace E_commerceSite.Web.Application.Controllers
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
             var model = await context.Products
-                .Where(p => p.IsAvailable == true)
-                .Where(p => p.CartProducts.Any(pc => pc.ProductId.ToString() == currentUserId))
+                .Where(p => p.IsAvailable == false)
+                .Where(p => p.CartProducts.Any(pc => pc.ApplicationUserId.ToString() == currentUserId))
                 .Select(p => new ProductCartViewModel()
                 {
                     Id = p.ProductId,
@@ -191,28 +191,41 @@ namespace E_commerceSite.Web.Application.Controllers
 
             if (!Guid.TryParse(currentUserId, out currGuid))
             {
-                // Handle invalid GUID, e.g., return an error or throw an exception
                 throw new ArgumentException("Invalid user ID");
             }
 
-            //if(!context.Carts.Any(x => x.CartID == currGuid))
-            //{
-            //    Cart newCart = new Cart()
-            //    {
-            //        CartID = currGuid,
-            //        CartItems = null
-            //    };
-            //    await context.AddAsync(newCart);
-            //}
-
             entity.CartProducts.Add(new CartProducts()
             {
-                CartId = currGuid,
+                ApplicationUserId = currGuid,
                 ProductId = entity.ProductId,
             });
 
-            //entity.CartProducts.Select(x => x.Cart.CartItems.Add(entity));
             await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+        public async Task<IActionResult> RemoveFromCart(Guid id)
+        {
+            Product? entity = await context.Products
+               .Where(p => p.ProductId == id)
+               .Include(p => p.CartProducts)
+               .FirstOrDefaultAsync();
+
+            if (entity == null || entity.IsAvailable)
+            {
+                throw new ArgumentException("Invalid id");
+            }
+
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+            CartProducts? cartProduct = entity.CartProducts.FirstOrDefault(gr => gr.ApplicationUserId.ToString() == currentUserId);
+
+            if (cartProduct != null)
+            {
+                entity.CartProducts.Remove(cartProduct);
+
+                await context.SaveChangesAsync();
+            }
 
             return RedirectToAction(nameof(Cart));
         }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Website.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -217,18 +217,11 @@ namespace Website.Data.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The password of the customer"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The email of the user"),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The address of the customer"),
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The id of the user's cart"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustomerUsers", x => x.CustomerId);
-                    table.ForeignKey(
-                        name: "FK_CustomerUser_Cart",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "CartID",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CustomerUsers_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -296,30 +289,24 @@ namespace Website.Data.Migrations
                 name: "CartsProducts",
                 columns: table => new
                 {
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the cart to which this item belongs"),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product in the cart"),
-                    ProductId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the cart to which this item belongs"),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The ID of the product in the cart")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartsProducts", x => new { x.CartId, x.ProductId });
+                    table.PrimaryKey("PK_CartsProducts", x => new { x.ApplicationUserId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_CartProducts_Cart",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "CartID",
+                        name: "FK_CartsProducts_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartProducts_Product",
+                        name: "FK_CartsProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartsProducts_Products_ProductId1",
-                        column: x => x.ProductId1,
-                        principalTable: "Products",
-                        principalColumn: "ProductId");
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -402,8 +389,8 @@ namespace Website.Data.Migrations
                 columns: new[] { "ProductId", "CategoryTypeId", "ImageUrl", "IsAvailable", "ProductDescription", "ProductName", "ProductPrice", "ProductTypeId", "StockQuantity" },
                 values: new object[,]
                 {
-                    { new Guid("41f15f1e-ffad-4301-ba4a-8e075b6939ef"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 },
-                    { new Guid("d633b20a-7061-4034-8090-dcc0d2204d14"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 }
+                    { new Guid("9550de2e-4297-4c8b-b442-5e37385d6471"), 1, null, true, "Lorem ipsum is the best", "Wall", 50m, 1, 1 },
+                    { new Guid("b22d50d7-a819-457b-901e-5c7288ccd682"), 1, null, true, "Lorem ipsum is the best", "Chair", 30m, 1, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -449,17 +436,6 @@ namespace Website.Data.Migrations
                 name: "IX_CartsProducts_ProductId",
                 table: "CartsProducts",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartsProducts_ProductId1",
-                table: "CartsProducts",
-                column: "ProductId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CustomerUsers_CartId",
-                table: "CustomerUsers",
-                column: "CartId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerUsers_UserId",
@@ -521,6 +497,9 @@ namespace Website.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
                 name: "CartsProducts");
 
             migrationBuilder.DropTable(
@@ -546,9 +525,6 @@ namespace Website.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustomerUsers");
-
-            migrationBuilder.DropTable(
-                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
