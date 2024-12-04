@@ -38,6 +38,8 @@ namespace E_commerceSite.Web.Application
                 .AddUserManager<UserManager<ApplicationUser>>();
 
             //Services
+            //builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
+            builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
