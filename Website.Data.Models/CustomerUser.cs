@@ -21,7 +21,7 @@ namespace Website.Data.Models
 
         [Required]
         [Comment("The password of the customer (hashed)")]
-        public string Password { get; set; } = null!; // Store as a hash in production
+        public string Password { get; set; } = null!;
 
         [Required]
         [Comment("The email of the customer")]

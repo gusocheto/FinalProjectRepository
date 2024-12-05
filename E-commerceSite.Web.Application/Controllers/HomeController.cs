@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Security.Claims;
 using Website.Data.Models;
 using Website.Data.Models.Enums;
+using Website.ViewModels.OrderViewModels;
 using Website.ViewModels.ProductViewModels;
 
 namespace E_commerceSite.Web.Application.Controllers
@@ -318,6 +319,33 @@ namespace E_commerceSite.Web.Application.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Order()
+        {
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            var model = await context.Products
+                .Where(p => p.IsAvailable == true)
+                .Where(p => p.CartProducts.Any(pc => pc.ApplicationUserId.ToString() == currentUserId))
+                .Select(p => new ProductCartViewModel()
+                {
+                    Id = p.ProductId,
+                    ImageUrl = p.ImageUrl,
+                    ProductName = p.ProductName,
+                    Price = p.ProductPrice,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            OrderFormViewModel orderModel = new OrderFormViewModel();
+            orderModel.productCartViewModels = model;
+
+            orderModel.AmountPaid = model.Sum(p => p.Price);
+
+            return View(orderModel);
+        }
+
 
 
         private string? GetCurrentUserId()
