@@ -46,7 +46,8 @@ namespace E_commerceSite.Web.Application.Controllers
                     Id = p.ProductId,
                     ProductName = p.ProductName,
                     ProductImageUrl = p.ImageUrl,
-                    ProductPrice = p.ProductPrice
+                    ProductPrice = p.ProductPrice,
+                    IsAvailable = p.IsAvailable,
                 })
                 .AsNoTracking()
                 .ToList();
@@ -104,6 +105,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 StockQuantity = model.ProductQuantity,
                 CategoryTypeId = model.CategoryId / 10,
                 ProductTypeId = model.ProductTypeId,
+                IsAvailable = true,
             };
 
             await context.Products.AddAsync(product);
@@ -117,7 +119,7 @@ namespace E_commerceSite.Web.Application.Controllers
         {
             var model = await context.Products
                 .Where(p => p.ProductId == id)
-                .Where(p => p.IsAvailable == false)
+                .Where(p => p.IsAvailable == true)
                 .AsNoTracking()
                 .Select(p => new ProductDescriptionViewModel()
                 {
@@ -287,12 +289,12 @@ namespace E_commerceSite.Web.Application.Controllers
                 .Where(p => p.ProductId == id)
                 .Where(p => p.IsAvailable == true)
                 .AsNoTracking()
-                .Select(p => new DeleteViewModel()
+                .Select(p => new DeleteProductViewModel()
                 {
-                    Id = p.Id,
+                    ProductId = p.ProductId,
                     ProductName = p.ProductName,
-                    SellerId = p.SellerId,
-                    Seller = User.Identity.Name,
+                    AdminId = GetCurrentUserId(),
+                    AdminName = User.Identity.Name,
                 })
                 .FirstOrDefaultAsync();
 
@@ -301,16 +303,16 @@ namespace E_commerceSite.Web.Application.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Delete(DeleteViewModel model)
+        public async Task<IActionResult> DeleteProduct(DeleteProductViewModel model)
         {
             Product? product = await context.Products
-                .Where(p => p.Id == model.Id)
-                .Where(p => p.IsDeleted == false)
+                .Where(p => p.ProductId == model.ProductId)
+                .Where(p => p.IsAvailable == true)
                 .FirstOrDefaultAsync();
 
             if (product != null)
             {
-                product.IsDeleted = true;
+                product.IsAvailable = false;
 
                 await context.SaveChangesAsync();
             }
