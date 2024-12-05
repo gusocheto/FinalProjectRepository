@@ -14,5 +14,7 @@ namespace Website.ViewModels.ProductViewModels
         public string ProductImageUrl { get; set; } = null!;
 
         public decimal ProductPrice { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }
