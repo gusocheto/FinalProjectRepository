@@ -119,7 +119,6 @@ namespace E_commerceSite.Web.Application.Controllers
         {
             var model = await context.Products
                 .Where(p => p.ProductId == id)
-                .Where(p => p.IsAvailable == true)
                 .AsNoTracking()
                 .Select(p => new ProductDescriptionViewModel()
                 {
@@ -143,7 +142,7 @@ namespace E_commerceSite.Web.Application.Controllers
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
             var model = await context.Products
-                .Where(p => p.IsAvailable == false)
+                .Where(p => p.IsAvailable == true)
                 .Where(p => p.CartProducts.Any(pc => pc.ApplicationUserId.ToString() == currentUserId))
                 .Select(p => new ProductCartViewModel()
                 {
@@ -166,7 +165,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 .Include(p => p.CartProducts)
                 .FirstOrDefaultAsync();
 
-            if (entity == null || entity.IsAvailable == true)
+            if (entity == null || entity.IsAvailable == false)
             {
                 throw new ArgumentException("Invalid id");
             }
@@ -203,7 +202,7 @@ namespace E_commerceSite.Web.Application.Controllers
                .Include(p => p.CartProducts)
                .FirstOrDefaultAsync();
 
-            if (entity == null || entity.IsAvailable)
+            if (entity == null || !entity.IsAvailable)
             {
                 throw new ArgumentException("Invalid id");
             }

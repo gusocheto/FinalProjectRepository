@@ -15,7 +15,7 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The ID of the order details")]
-        public int OrderDetailsID { get; set; }
+        public Guid OrderDetailsID { get; set; }
 
         [Required]
         [Comment("The ID of the customer associated with the order")]
