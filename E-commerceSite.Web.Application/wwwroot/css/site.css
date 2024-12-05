@@ -83,7 +83,42 @@ body {
     border-radius: 5px;
 }
 
-/* Footer */
+.soft-deleted {
+    background-color: #f8d7da; /* Light red background */
+    border: 1px solid #f5c2c7; /* Red border */
+    opacity: 0.8; /* Slightly faded look */
+}
+
+.soft-deleted .card-title,
+.soft-deleted .card-text {
+    color: #721c24; /* Dark red text */
+}
+
+.card.soft-deleted .restock-btn {
+    display: none; /* Hide by default */
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.card.soft-deleted:hover .restock-btn {
+    display: block; /* Show button on hover */
+}
+
+/* Position the button correctly within the card */
+.card.soft-deleted {
+    position: center; /* Ensure the button is positioned relative to the card */
+}
+
 footer {
     text-align: center;
     background-color: #333;

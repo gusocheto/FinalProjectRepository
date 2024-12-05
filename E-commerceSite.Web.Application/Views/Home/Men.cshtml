@@ -47,10 +47,13 @@
                 </div>
             </div>
         }
+    }
+    @foreach (var product in Model)
+    {
         @if (product.IsAvailable == false && User?.Identity?.Name == "admin@web.com")
         {
             <div class="col-md-3 mb-4">
-                <div class="card h-100" style="width: 100%;">
+                <div class="card h-100 soft-deleted" style="width: 100%;">
                     @if (!string.IsNullOrEmpty(product.ProductImageUrl))
                     {
                         <img src="@product.ProductImageUrl" class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="@product.ProductName">
@@ -78,6 +81,7 @@
                             }
                         </div>
                     </div>
+                    <a asp-controller="Home" asp-action="Restock" asp-route-id="@product.Id" class="restock-btn">Restock</a>
                 </div>
             </div>
         }
