@@ -22,15 +22,15 @@ namespace Website.Data.Configurations
                 .IsRequired()
                 .HasComment("The id of the order details");
 
-            builder.Property(od => od.CustomerUserID)
-                .IsRequired()
-                .HasComment("The id of the current user");
+            //builder.Property(od => od.CustomerUserID)
+            //    .IsRequired()
+            //    .HasComment("The id of the current user");
 
-            builder.HasOne(od => od.CustomerUser)
-                .WithMany()
-                .HasForeignKey(od => od.CustomerUserID)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_OrderDetails_CustomerUser");
+            //builder.HasOne(od => od.CustomerUser)
+            //    .WithMany()
+            //    .HasForeignKey(od => od.CustomerUserID)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK_OrderDetails_CustomerUser");
 
             builder.Property(od => od.ShippingAddress)
                 .IsRequired()

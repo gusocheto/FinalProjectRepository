@@ -229,7 +229,7 @@ namespace E_commerceSite.Web.Application.Controllers
 
             var model = await context.Products
                 .Where(p => p.ProductId == id)
-                .Where(p => p.IsAvailable == false)
+                .Where(p => p.IsAvailable == true)
                 .AsNoTracking()
                 .Select(p => new ProductViewModel()
                 {
@@ -263,7 +263,7 @@ namespace E_commerceSite.Web.Application.Controllers
 
             Product? entity = await context.Products.FindAsync(id);
 
-            if (entity == null || entity.IsAvailable)
+            if (entity == null || !entity.IsAvailable)
             {
                 throw new ArgumentException("Invalid id");
             }
@@ -344,6 +344,57 @@ namespace E_commerceSite.Web.Application.Controllers
             orderModel.AmountPaid = model.Sum(p => p.Price);
 
             return View(orderModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Order(OrderFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            Order order = new Order
+            {
+                DateOnOrderCreation = DateTime.Now,
+                OrderDetails = new OrderDetails() 
+                {
+                    ShippingAddress = model.ShippingAddress,
+                    City = model.City,
+                    Country = model.Country,
+                    ZipCode = model.ZipCode,
+                    AmountPaid = model.AmountPaid,
+                },
+                StatusId = (int)StatusEnumaration.Pending / 2,
+            };
+
+            Guid currGuid;
+
+            if (!Guid.TryParse(currentUserId, out currGuid))
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            order.OrderUsers.Add(new OrderUser()
+            {
+                ApplicationUserId = currGuid,
+                OrderId = order.OrderId,
+            });
+
+            ApplicationUser? currAppUser = await context.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == currGuid);
+
+            currAppUser.ProductCarts.Clear();
+
+            //Clear The CartProducts where the AppUserId == currUserId/CurrGuid
+            //Or change so the CartProducts add to each User Individually trough the collection in ApplicationUser
+
+            await context.Orders.AddAsync(order);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
 

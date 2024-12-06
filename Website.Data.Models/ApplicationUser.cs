@@ -15,7 +15,13 @@ namespace Website.Data.Models
             this.Id = Guid.NewGuid();
         }
 
-        public virtual ICollection<CustomerUser> Tickets { get; set; }
+        public virtual ICollection<OrderUser> UserOrders { get; set; } 
+            = new HashSet<OrderUser>();
+
+        public ICollection<CartProducts> ProductCarts { get; set; } =
+             new List<CartProducts>();
+
+        public virtual ICollection<CustomerUser> CustomerUsers { get; set; }
              = new HashSet<CustomerUser>();
     }
 }

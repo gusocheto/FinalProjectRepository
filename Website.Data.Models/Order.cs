@@ -13,15 +13,15 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("Id of the order")]
-        public Guid OrderId { get; set; }
+        public Guid OrderId { get; set; } = Guid.NewGuid();
 
-        [Required]
-        [Comment("The id of the user who made the order")]
-        public Guid UserId { get; set; }
+        //[Required]
+        //[Comment("The id of the user who made the order")]
+        //public Guid UserId { get; set; }
 
-        [Required]
-        [ForeignKey(nameof(UserId))]
-        public CustomerUser User { get; set; } = null!;
+        //[Required]
+        //[ForeignKey(nameof(UserId))]
+        //public CustomerUser User { get; set; } = null!;
 
         [Required]
         [Comment("The date on which the order was created")]
@@ -42,5 +42,8 @@ namespace Website.Data.Models
         [Required]
         [ForeignKey(nameof(StatusId))]
         public virtual Status Status { get; set; } = null!;
+
+        public ICollection<OrderUser> OrderUsers { get; set; } =
+            new List<OrderUser>();
     }
 }

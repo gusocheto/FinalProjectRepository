@@ -19,15 +19,15 @@ namespace Website.Data.Configurations
                 .IsRequired()
                 .HasComment("Id of the order");
 
-            builder.Property(o => o.UserId)
-                .IsRequired()
-                .HasComment("The id of the user who made the order");
+            //builder.Property(o => o.UserId)
+            //    .IsRequired()
+            //    .HasComment("The id of the user who made the order");
 
-            builder.HasOne(o => o.User)
-                .WithMany()
-                .HasForeignKey(o => o.UserId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Order_User");
+            //builder.HasOne(o => o.User)
+            //    .WithMany()
+            //    .HasForeignKey(o => o.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade)
+            //    .HasConstraintName("FK_Order_User");
 
             builder.Property(o => o.DateOnOrderCreation)
                 .IsRequired()

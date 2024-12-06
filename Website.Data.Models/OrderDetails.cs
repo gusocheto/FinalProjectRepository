@@ -15,16 +15,16 @@ namespace Website.Data.Models
     {
         [Key]
         [Comment("The ID of the order details")]
-        public Guid OrderDetailsID { get; set; }
+        public Guid OrderDetailsID { get; set; } = Guid.NewGuid();
 
-        [Required]
-        [Comment("The ID of the customer associated with the order")]
-        public Guid CustomerUserID { get; set; }
+        //[Required]
+        //[Comment("The ID of the customer associated with the order")]
+        //public Guid CustomerUserID { get; set; }
 
-        [Required]
-        [ForeignKey(nameof(CustomerUserID))]
-        [Comment("The customer associated with the order")]
-        public CustomerUser CustomerUser { get; set; } = null!;
+        //[Required]
+        //[ForeignKey(nameof(CustomerUserID))]
+        //[Comment("The customer associated with the order")]
+        //public CustomerUser CustomerUser { get; set; } = null!;
 
         [Required]
         [Comment("The shipping address for the order")]

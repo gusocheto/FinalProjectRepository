@@ -24,6 +24,7 @@ namespace Website.ViewModels.OrderViewModels
         public string ZipCode { get; set; } = null!;
 
         public decimal AmountPaid { get; set; }
+        public int StatusId { get; set; }
 
         public IEnumerable<ProductCartViewModel> productCartViewModels { get; set; } 
             = new List<ProductCartViewModel>();

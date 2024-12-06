@@ -9,9 +9,11 @@ namespace Website.Data.Models.Enums
     public enum StatusEnumaration
     {
         Pending = 2,
-        Shipped = 4,
-        Delivered = 6,
-        Cancelled = 8,
+        Processing = 4,
+        Shipped = 6,
+        Delivered = 8,
+        Cancelled = 10,
+        Returned = 12,
 
     }
 }
