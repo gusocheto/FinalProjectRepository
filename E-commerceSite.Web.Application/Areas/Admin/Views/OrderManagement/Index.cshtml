@@ -1,0 +1,75 @@
+﻿@using Website.Data.Models
+@using Website.Data.Models.Enums
+﻿@using Website.ViewModels.Admin.OrderManagmentViewModels
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@model IEnumerable<AllOrdersViewModel>
+
+@inject RoleManager<IdentityRole<Guid>> roleManager
+
+@{
+    List<Status> statuses = Enum.GetValues(typeof(StatusEnumaration))
+                .Cast<StatusEnumaration>()
+                .Select(e => new Status
+                       {
+                            StatusId = (int)e,
+                            StatusType = e
+                       })
+                .ToList();
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">User Management</h1>
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>User</th>
+                <th>Statuses</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.NameOfClient</td>
+                    <td>
+                        @foreach (var status in order.Statuses)
+                        {
+                            <span class="badge bg-secondary">@status</span>
+                        }
+                    </td>
+                    <td>
+                        <form method="post" asp-action="AssignStatus" asp-controller="OrderManagement" asp-area="Admin" class="d-inline">
+                            <input type="hidden" name="userId" value="@order.OrderId" />
+                            <select name="status" class="form-select d-inline w-auto">
+                                @foreach (string status in order.Statuses)
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Assign Role</button>
+                        </form>
+
+                        <form method="post" asp-action="RemoveRole" asp-controller="UserManagement" asp-area="Admin" class="d-inline ms-2">
+                            <input type="hidden" name="userId" value="@order.OrderId" />
+                            <select name="role" class="form-select d-inline w-auto">
+                                @foreach (var status in order.Statuses)
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-warning btn-sm">Remove Role</button>
+                        </form>
+
+                        <form method="post" asp-action="DeleteUser" asp-controller="UserManagement" asp-area="Admin" class="d-inline ms-2">
+                            <input type="hidden" name="userId" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

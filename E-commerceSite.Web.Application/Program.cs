@@ -39,7 +39,11 @@ namespace E_commerceSite.Web.Application
 
             //Services
             //builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
-            builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
+            //builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
+            //builder.Services.RegisterUserDefinedServices(typeof(IOrderService).Assembly);
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            //builder.Services.AddScoped<IOrderService, OrderService>();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
