@@ -28,6 +28,7 @@ namespace E_commerceSite.Web.Application.Data
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<CartProducts> CartsProducts { get; set; }
         public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public virtual DbSet<OrderProducts> OrdersProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

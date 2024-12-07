@@ -365,6 +365,11 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid user ID");
             }
 
+            var cartProducts = await context.CartsProducts
+                .Where(cp => cp.ApplicationUserId == currGuid)
+                .Include(cp => cp.Product) // Include product details
+                .ToListAsync();
+
             Order order = new Order
             {
                 DateOnOrderCreation = DateTime.Now,
@@ -377,6 +382,10 @@ namespace E_commerceSite.Web.Application.Controllers
                     AmountPaid = model.AmountPaid,
                 },
                 StatusId = (int)StatusEnumaration.Pending / 2,
+                OrderCartProducts = cartProducts.Select(cp => new OrderProducts
+                {
+                    ProductId = cp.ProductId,
+                }).ToList()
             };
 
             order.OrderUsers.Add(new OrderUser
@@ -400,7 +409,6 @@ namespace E_commerceSite.Web.Application.Controllers
                 .Where(cp => cp.ApplicationUserId == currGuid)
                 .ToListAsync();
 
-            order.OrderCartProducts = cartProductsToRemove;
 
             context.CartsProducts.RemoveRange(cartProductsToRemove);
 
@@ -429,6 +437,33 @@ namespace E_commerceSite.Web.Application.Controllers
                     DateOnOrderMade = cp.DateOnOrderCreation,
                     ApproximetlyArrivalDate = cp.DateOnOrderCreation.AddDays(7),
                     CountOfItems = cp.OrderCartProducts.Count,
+                    StatusType = cp.Status.StatusType.ToString() ?? string.Empty,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> SeeOrderDetails()
+        {
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            if (!Guid.TryParse(currentUserId, out Guid currGuid))
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            var statuts = GetStatusTypes();
+
+            var model = await context.Orders
+                .Where(cp => cp.OrderUsers.Any(x => x.ApplicationUserId == currGuid))
+                .Select(cp => new UserMadeOrderViewModel
+                {
+                    OrderId = cp.OrderId,
+                    DateOnOrderMade = cp.DateOnOrderCreation,
+                    ApproximetlyArrivalDate = cp.DateOnOrderCreation.AddDays(7),
+                    CountOfItems = cp.OrderCartProducts.Count(),
                     StatusType = cp.Status.StatusType.ToString() ?? string.Empty,
                 })
                 .AsNoTracking()

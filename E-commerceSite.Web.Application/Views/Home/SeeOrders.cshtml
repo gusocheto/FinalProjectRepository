@@ -16,20 +16,24 @@
         <div class="col-md-2 text-center">
             <img src="~/Images/truck.jpg" class="img-fluid" style="max-height: 100px; object-fit: contain;" alt="No Image Available" />
         </div>
-        <div class="col-md-4 text-start">
-            <h4>Order made on:</h4>
-            <h5 class="mb-0">@order.DateOnOrderMade</h5>
-        </div>
-        <div class="col-md-3 text-start">
-            <h4>Status:</h4>
-            <h5 class="mb-0">@order.StatusType</h5>
+        <div class="col-md-2 text-start">
+            <p>Order made on:</p>
+            <p class="mb-0">@order.DateOnOrderMade</p>
         </div>
         <div class="col-md-2 text-start">
-            <h4>Order is awaited to arrive on the following date:</h4>
-            <h5 class="mb-0">@order.ApproximetlyArrivalDate</h5>
+            <p>Status:</p>
+            <p class="mb-0">@order.StatusType</p>
+        </div>
+        <div class="col-md-2 text-start">
+            <p>Order is awaited to arrive on the following date:</p>
+            <p class="mb-0">@order.ApproximetlyArrivalDate</p>
+        </div>
+        <div class="col-md-2 text-start">
+            <p>Count of items:</p>
+            <p class="mb-0">@order.CountOfItems</p>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-controller="Home" asp-action="Order" asp-route-id="@order.OrderId" class="btn btn-info me-2 w-50">View order details</a>
+            <a asp-controller="Home" asp-action="SeeOrderDetails" asp-route-id="@order.OrderId" class="btn btn-info me-2 w-50">View order details</a>
         </div>
     </div>
 }
