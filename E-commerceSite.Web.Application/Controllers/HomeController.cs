@@ -418,6 +418,8 @@ namespace E_commerceSite.Web.Application.Controllers
             return RedirectToAction(nameof(SuccsesfullOrder));
         }
 
+
+        [HttpGet]
         public async Task<IActionResult> SeeOrders()
         {
             string currentUserId = GetCurrentUserId() ?? string.Empty;
@@ -445,29 +447,38 @@ namespace E_commerceSite.Web.Application.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> SeeOrderDetails()
+        [HttpGet]
+        public async Task<IActionResult> OrderDetails(Guid orderId)
         {
-            string currentUserId = GetCurrentUserId() ?? string.Empty;
 
-            if (!Guid.TryParse(currentUserId, out Guid currGuid))
+            var currentOrder = await context.Orders
+                       .Where(o => o.OrderId == orderId)
+                       .Include(o => o.OrderDetails)
+                       .Include(o => o.OrderCartProducts)
+                           .ThenInclude(op => op.Product)
+                       .FirstOrDefaultAsync();
+
+            if (currentOrder == null)
             {
-                throw new ArgumentException("Invalid user ID");
+                return NotFound();
             }
 
-            var statuts = GetStatusTypes();
-
-            var model = await context.Orders
-                .Where(cp => cp.OrderUsers.Any(x => x.ApplicationUserId == currGuid))
-                .Select(cp => new UserMadeOrderViewModel
+            var model = new UserOrderDetailsViewModel
+            {
+                OrderDetailsId = currentOrder.OrderDetails.OrderDetailsID,
+                ShippingAddress = currentOrder.OrderDetails.ShippingAddress,
+                City = currentOrder.OrderDetails.City,
+                Country = currentOrder.OrderDetails.Country,
+                ZipCode = currentOrder.OrderDetails.ZipCode,
+                AmountPaid = currentOrder.OrderDetails.AmountPaid,
+                productCartViewModels = currentOrder.OrderCartProducts.Select(op => new ProductCartViewModel
                 {
-                    OrderId = cp.OrderId,
-                    DateOnOrderMade = cp.DateOnOrderCreation,
-                    ApproximetlyArrivalDate = cp.DateOnOrderCreation.AddDays(7),
-                    CountOfItems = cp.OrderCartProducts.Count(),
-                    StatusType = cp.Status.StatusType.ToString() ?? string.Empty,
-                })
-                .AsNoTracking()
-                .ToListAsync();
+                    Id = op.ProductId,
+                    ProductName = op.Product.ProductName,
+                    Price = op.Product.ProductPrice,
+                    ImageUrl = op.Product.ImageUrl
+                }).ToList()
+            };
 
             return View(model);
         }
