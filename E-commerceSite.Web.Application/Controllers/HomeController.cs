@@ -31,6 +31,11 @@ namespace E_commerceSite.Web.Application.Controllers
             return View();
         }
 
+        public IActionResult SuccsesfullOrder()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -46,7 +51,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 {
                     Id = p.ProductId,
                     ProductName = p.ProductName,
-                    ProductImageUrl = p.ImageUrl,
+                    ProductImageUrl = p.ImageUrl ?? string.Empty,
                     ProductPrice = p.ProductPrice,
                     IsAvailable = p.IsAvailable,
                 })
@@ -126,7 +131,7 @@ namespace E_commerceSite.Web.Application.Controllers
                     Id = p.ProductId,
                     ImageUrl = p.ImageUrl,
                     ProductName = p.ProductName,
-                    Description = p.ProductDescription,
+                    Description = p.ProductDescription ?? string.Empty,
                     Price = p.ProductPrice,
                     CategoryName = p.Category.CategoryType.ToString(),
                     Quantity = p.StockQuantity,
@@ -308,7 +313,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
-                    AdminId = GetCurrentUserId(),
+                    AdminId = GetCurrentUserId() ?? string.Empty,
                     AdminName = User.Identity.Name,
                 })
                 .FirstOrDefaultAsync();
@@ -409,12 +414,14 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid user ID");
             }
 
+            currAppUser.ProductCarts.Clear();
+
             // Clear the user's cart
             var cartProductsToRemove = await context.CartsProducts
                 .Where(cp => cp.ApplicationUserId == currGuid)
                 .ToListAsync();
 
-            //order.OrderCartProducts = cartProductsToRemove;
+            order.OrderCartProducts = cartProductsToRemove;
 
             context.CartsProducts.RemoveRange(cartProductsToRemove);
 
@@ -422,7 +429,7 @@ namespace E_commerceSite.Web.Application.Controllers
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(SuccsesfullOrder));
         }
 
         private string? GetCurrentUserId()
