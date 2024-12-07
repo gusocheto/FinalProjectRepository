@@ -65,21 +65,9 @@ namespace E_commerceSite.Web.Application.Controllers
         [HttpGet]
         public IActionResult AddProduct()
         {
-            var categories = Enum.GetValues(typeof(CategoryEnumaration))
-                                 .Cast<CategoryEnumaration>()
-                                 .Select(e => new Category
-                                 {
-                                     CategoryId = (int)e,
-                                     CategoryType = e
-                                 }).ToList();
+            var categories = GetCategories();
 
-            var productTypes = Enum.GetValues(typeof(ProductCategorizationEnumaration))
-                           .Cast<ProductCategorizationEnumaration>()
-                           .Select(e => new ProductType
-                           {
-                               ProductTypeId = (int)e,
-                               ProductTypeName = e
-                           }).ToList();
+            var productTypes = GetProductTypes();
 
             var model = new ProductViewModel
             {
@@ -170,7 +158,6 @@ namespace E_commerceSite.Web.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(Guid id)
         {
-            // Find the product
             Product? entity = await context.Products
                 .FirstOrDefaultAsync(p => p.ProductId == id);
 
@@ -179,7 +166,6 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid product ID");
             }
 
-            // Get the current user ID
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
             if (!Guid.TryParse(currentUserId, out Guid currGuid))
@@ -187,7 +173,6 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid user ID");
             }
 
-            // Find the current user
             ApplicationUser? currAppUser = await context.ApplicationUsers
                 .Include(u => u.ProductCarts)
                 .FirstOrDefaultAsync(x => x.Id == currGuid);
@@ -197,13 +182,11 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid user ID");
             }
 
-            // Check if the product is already in the user's cart
             if (currAppUser.ProductCarts.Any(p => p.ProductId == entity.ProductId))
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            // Add the product to the user's cart
             currAppUser.ProductCarts.Add(new CartProducts
             {
                 ApplicationUserId = currGuid,
@@ -382,7 +365,6 @@ namespace E_commerceSite.Web.Application.Controllers
                 throw new ArgumentException("Invalid user ID");
             }
 
-            // Create a new order
             Order order = new Order
             {
                 DateOnOrderCreation = DateTime.Now,
@@ -397,14 +379,12 @@ namespace E_commerceSite.Web.Application.Controllers
                 StatusId = (int)StatusEnumaration.Pending / 2,
             };
 
-            // Link the order to the current user
             order.OrderUsers.Add(new OrderUser
             {
                 ApplicationUserId = currGuid,
                 OrderId = order.OrderId,
             });
 
-            // Find the current user and their cart
             ApplicationUser? currAppUser = await context.ApplicationUsers
                 .Include(u => u.ProductCarts)
                 .FirstOrDefaultAsync(x => x.Id == currGuid);
@@ -416,7 +396,6 @@ namespace E_commerceSite.Web.Application.Controllers
 
             currAppUser.ProductCarts.Clear();
 
-            // Clear the user's cart
             var cartProductsToRemove = await context.CartsProducts
                 .Where(cp => cp.ApplicationUserId == currGuid)
                 .ToListAsync();
@@ -425,11 +404,37 @@ namespace E_commerceSite.Web.Application.Controllers
 
             context.CartsProducts.RemoveRange(cartProductsToRemove);
 
-            // Add the order and save changes
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(SuccsesfullOrder));
+        }
+
+        public async Task<IActionResult> SeeOrders()
+        {
+            string currentUserId = GetCurrentUserId() ?? string.Empty;
+
+            if (!Guid.TryParse(currentUserId, out Guid currGuid))
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            var statuts = GetStatusTypes();
+
+            var model = await context.Orders
+                .Where(cp => cp.OrderUsers.Any(x => x.ApplicationUserId == currGuid))
+                .Select(cp => new UserMadeOrderViewModel
+                {
+                    OrderId = cp.OrderId,
+                    DateOnOrderMade = cp.DateOnOrderCreation,
+                    ApproximetlyArrivalDate = cp.DateOnOrderCreation.AddDays(7),
+                    CountOfItems = cp.OrderCartProducts.Count,
+                    StatusType = cp.Status.StatusType.ToString() ?? string.Empty,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(model);
         }
 
         private string? GetCurrentUserId()
@@ -457,6 +462,18 @@ namespace E_commerceSite.Web.Application.Controllers
                        {
                            ProductTypeId = (int)e,
                            ProductTypeName = e
+                       })
+                       .ToList();
+        }
+
+        private List<Status> GetStatusTypes()
+        {
+            return Enum.GetValues(typeof(StatusEnumaration))
+                       .Cast<StatusEnumaration>()
+                       .Select(e => new Status
+                       {
+                           StatusId = (int)e,
+                           StatusType = e
                        })
                        .ToList();
         }
