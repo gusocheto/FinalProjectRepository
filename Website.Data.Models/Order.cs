@@ -45,5 +45,8 @@ namespace Website.Data.Models
 
         public ICollection<OrderUser> OrderUsers { get; set; } =
             new List<OrderUser>();
+
+        public ICollection<CartProducts> OrderCartProducts { get; set; } 
+            = new List<CartProducts>();
     }
 }

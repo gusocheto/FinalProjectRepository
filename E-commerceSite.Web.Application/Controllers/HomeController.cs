@@ -137,20 +137,23 @@ namespace E_commerceSite.Web.Application.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Cart()
+        public async Task<IActionResult> Cart()
         {
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
-            var model = await context.Products
-                .Where(p => p.IsAvailable == true)
-                .Where(p => p.CartProducts.Any(pc => pc.ApplicationUserId.ToString() == currentUserId))
-                .Select(p => new ProductCartViewModel()
+            if (!Guid.TryParse(currentUserId, out Guid currGuid))
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            var model = await context.CartsProducts
+                .Where(cp => cp.ApplicationUserId == currGuid)
+                .Select(cp => new ProductCartViewModel
                 {
-                    Id = p.ProductId,
-                    ImageUrl = p.ImageUrl,
-                    ProductName = p.ProductName,
-                    Price = p.ProductPrice,
+                    Id = cp.Product.ProductId,
+                    ImageUrl = cp.Product.ImageUrl,
+                    ProductName = cp.Product.ProductName,
+                    Price = cp.Product.ProductPrice,
                 })
                 .AsNoTracking()
                 .ToListAsync();
@@ -158,34 +161,45 @@ namespace E_commerceSite.Web.Application.Controllers
             return View(model);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> AddToCart(Guid id)
         {
+            // Find the product
             Product? entity = await context.Products
-                .Where(p => p.ProductId == id)
-                .Include(p => p.CartProducts)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.ProductId == id);
 
-            if (entity == null || entity.IsAvailable == false)
+            if (entity == null || !entity.IsAvailable)
             {
-                throw new ArgumentException("Invalid id");
+                throw new ArgumentException("Invalid product ID");
             }
 
+            // Get the current user ID
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
-            if (entity.CartProducts.Any(p => p.ProductId.ToString() == currentUserId))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            Guid currGuid;
-
-            if (!Guid.TryParse(currentUserId, out currGuid))
+            if (!Guid.TryParse(currentUserId, out Guid currGuid))
             {
                 throw new ArgumentException("Invalid user ID");
             }
 
-            entity.CartProducts.Add(new CartProducts()
+            // Find the current user
+            ApplicationUser? currAppUser = await context.ApplicationUsers
+                .Include(u => u.ProductCarts)
+                .FirstOrDefaultAsync(x => x.Id == currGuid);
+
+            if (currAppUser == null)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            // Check if the product is already in the user's cart
+            if (currAppUser.ProductCarts.Any(p => p.ProductId == entity.ProductId))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Add the product to the user's cart
+            currAppUser.ProductCarts.Add(new CartProducts
             {
                 ApplicationUserId = currGuid,
                 ProductId = entity.ProductId,
@@ -195,6 +209,7 @@ namespace E_commerceSite.Web.Application.Controllers
 
             return RedirectToAction(nameof(Cart));
         }
+
 
         public async Task<IActionResult> RemoveFromCart(Guid id)
         {
@@ -357,10 +372,16 @@ namespace E_commerceSite.Web.Application.Controllers
 
             string currentUserId = GetCurrentUserId() ?? string.Empty;
 
+            if (!Guid.TryParse(currentUserId, out Guid currGuid))
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            // Create a new order
             Order order = new Order
             {
                 DateOnOrderCreation = DateTime.Now,
-                OrderDetails = new OrderDetails() 
+                OrderDetails = new OrderDetails
                 {
                     ShippingAddress = model.ShippingAddress,
                     City = model.City,
@@ -371,33 +392,38 @@ namespace E_commerceSite.Web.Application.Controllers
                 StatusId = (int)StatusEnumaration.Pending / 2,
             };
 
-            Guid currGuid;
-
-            if (!Guid.TryParse(currentUserId, out currGuid))
-            {
-                throw new ArgumentException("Invalid user ID");
-            }
-
-            order.OrderUsers.Add(new OrderUser()
+            // Link the order to the current user
+            order.OrderUsers.Add(new OrderUser
             {
                 ApplicationUserId = currGuid,
                 OrderId = order.OrderId,
             });
 
-            ApplicationUser? currAppUser = await context.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == currGuid);
+            // Find the current user and their cart
+            ApplicationUser? currAppUser = await context.ApplicationUsers
+                .Include(u => u.ProductCarts)
+                .FirstOrDefaultAsync(x => x.Id == currGuid);
 
-            currAppUser.ProductCarts.Clear();
+            if (currAppUser == null)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
 
-            //Clear The CartProducts where the AppUserId == currUserId/CurrGuid
-            //Or change so the CartProducts add to each User Individually trough the collection in ApplicationUser
+            // Clear the user's cart
+            var cartProductsToRemove = await context.CartsProducts
+                .Where(cp => cp.ApplicationUserId == currGuid)
+                .ToListAsync();
 
+            //order.OrderCartProducts = cartProductsToRemove;
+
+            context.CartsProducts.RemoveRange(cartProductsToRemove);
+
+            // Add the order and save changes
             await context.Orders.AddAsync(order);
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
-
-
 
         private string? GetCurrentUserId()
         {
