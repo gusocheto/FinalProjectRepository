@@ -367,7 +367,7 @@ namespace E_commerceSite.Web.Application.Controllers
 
             var cartProducts = await context.CartsProducts
                 .Where(cp => cp.ApplicationUserId == currGuid)
-                .Include(cp => cp.Product) // Include product details
+                .Include(cp => cp.Product)
                 .ToListAsync();
 
             Order order = new Order
