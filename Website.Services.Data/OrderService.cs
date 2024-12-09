@@ -29,28 +29,49 @@ namespace Website.Services.Data
             var allOrdersViewModel = allOrders.Select(order => new AllOrdersViewModel
             {
                 OrderId = order.OrderId.ToString(),
-                NameOfClient = order.OrderUsers.FirstOrDefault()?.ApplicationUser.UserName ?? "Unknown",
                 Statuses = new List<string> { order.Status.StatusType.ToString() }
             });
 
             return allOrdersViewModel;
         }
 
-
-
-        public Task<bool> AssignOrderToStatusAsync(Guid orderId, string statusName)
+        public async Task<bool> AssignOrderToStatusAsync(Guid orderId, string statusName)
         {
-            throw new NotImplementedException();
+            var order = await this.orderRepository.FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                return false;
+            }
+
+            var status = await this.orderRepository.FirstOrDefaultAsync(s => s.Status.ToString() == statusName);
+
+            if (status == null)
+            {
+                return false;
+            }
+
+            order.StatusId = status.StatusId;
+            await this.orderRepository.UpdateAsync(order);
+
+            return true;
         }
 
-        public Task<bool> RemoveOrderAsync(Guid orderId)
+        public async Task<bool> RemoveOrderAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            var order = await this.orderRepository.GetByIdAsync(orderId);
+
+            if (order == null)
+            {
+                return false;
+            }
+
+            return await this.orderRepository.DeleteAsync(order);
         }
 
-        public Task<bool> OrderExistsByIdAsync(Guid orderId)
+        public async Task<bool> OrderExistsByIdAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            return await this.orderRepository.FirstOrDefaultAsync(o => o.OrderId == orderId) != null;
         }
 
     }

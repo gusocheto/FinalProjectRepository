@@ -11,10 +11,10 @@
     List<Status> statuses = Enum.GetValues(typeof(StatusEnumaration))
                 .Cast<StatusEnumaration>()
                 .Select(e => new Status
-                       {
+                        {
                             StatusId = (int)e,
                             StatusType = e
-                       })
+                        })
                 .ToList();
 }
 
@@ -33,7 +33,7 @@
             @foreach (var order in Model)
             {
                 <tr>
-                    <td>@order.NameOfClient</td>
+                    <td>@order.OrderId</td>
                     <td>
                         @foreach (var status in order.Statuses)
                         {

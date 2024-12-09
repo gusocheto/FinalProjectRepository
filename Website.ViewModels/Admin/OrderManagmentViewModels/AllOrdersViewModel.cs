@@ -11,8 +11,6 @@ namespace Website.ViewModels.Admin.OrderManagmentViewModels
     {
         public string OrderId { get; set; } = null!;
 
-        public string NameOfClient { get; set; } = null!;
-
         public IEnumerable<string> Statuses { get; set; } = null!;
     }
 }

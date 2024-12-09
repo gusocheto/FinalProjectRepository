@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using E_commerceSite.Web.Application.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using Website.Services.Data.Interfaces;
 using Website.ViewModels.Admin.OrderManagmentViewModels;
-using Website.ViewModels.Admin.UserManagementViewModel;
 
 namespace E_commerceSite.Web.Application.Areas.Admin.Controllers
 {
-    public class OrderManagementController : Controller
+    public class OrderManagementController : BaseController
     {
         private readonly IOrderService orderService;
 

@@ -13,8 +13,7 @@ namespace E_commerceSite.Web.Application.Areas.Admin.Controllers
     {
         private readonly IUserService userService;
 
-        public UserManagementController(IUserService userService /*IManagerService managerService*/)
-            //: base(managerService)
+        public UserManagementController(IUserService userService)
         {
             this.userService = userService;
         }
