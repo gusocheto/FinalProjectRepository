@@ -50,7 +50,8 @@ namespace Website.Data.Configurations
                 new Category { CategoryId = 13, CategoryType = CategoryEnumaration.HatsAndCaps },
                 new Category { CategoryId = 14, CategoryType = CategoryEnumaration.Sunglasses },
                 new Category { CategoryId = 15, CategoryType = CategoryEnumaration.Jewelry },
-                new Category { CategoryId = 16, CategoryType = CategoryEnumaration.Watches }
+                new Category { CategoryId = 16, CategoryType = CategoryEnumaration.Watches },
+                new Category { CategoryId = 17, CategoryType = CategoryEnumaration.Toys }
             );
         }
     }

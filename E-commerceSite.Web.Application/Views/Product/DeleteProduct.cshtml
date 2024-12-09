@@ -24,7 +24,7 @@
                     <input type="hidden" asp-for="AdminId" />
                     <input type="hidden" asp-for="AdminName" />
                     <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-warning">Cancel</a>
+                    <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@Model.ProductId" class="btn btn-warning">Cancel</a>
                 </form>
             </div>
         </div>

@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Website.Data.Models.Enums;
+using Website.Data.Models;
+using System.Security.Claims;
 
 namespace E_commerceSite.Web.Application.Controllers
 {
     public class BaseController : Controller
     {
-        //protected readonly IManagerService managerService;
-
-        public BaseController(/*imanagerservice managerservice*/)
+        public BaseController()
         {
-            //this.managerservice = managerservice;
+            
         }
 
         protected bool IsGuidValid(string? id, ref Guid parsedGuid)
@@ -27,20 +28,47 @@ namespace E_commerceSite.Web.Application.Controllers
             return true;
         }
 
-        //protected async Task<bool> IsUserManagerAsync()
-        //{
-        //    string? userId = this.User.GetUserId();
-        //    bool isManager = await this.managerService
-        //        .IsUserManagerAsync(userId);
+        protected List<Category> GetCategories()
+        {
+            return Enum.GetValues(typeof(CategoryEnumaration))
+                       .Cast<CategoryEnumaration>()
+                       .Select(e => new Category
+                       {
+                           CategoryId = (int)e,
+                           CategoryType = e
+                       })
+                       .ToList();
+        }
 
-        //    return isManager;
-        //}
+        protected List<ProductType> GetProductTypes()
+        {
+            return Enum.GetValues(typeof(ProductCategorizationEnumaration))
+                       .Cast<ProductCategorizationEnumaration>()
+                       .Select(e => new ProductType
+                       {
+                           ProductTypeId = (int)e,
+                           ProductTypeName = e
+                       })
+                       .ToList();
+        }
 
-        //protected async Task AppendUserCookieAsync()
-        //{
-        //    bool isManager = await this.IsUserManagerAsync();
+        protected List<Status> GetStatusTypes()
+        {
+            return Enum.GetValues(typeof(StatusEnumaration))
+                       .Cast<StatusEnumaration>()
+                       .Select(e => new Status
+                       {
+                           StatusId = (int)e,
+                           StatusType = e
+                       })
+                       .ToList();
+        }
 
-        //    this.HttpContext.Response.Cookies.Append(IsManagerCookieName, isManager.ToString());
-        //}
+        protected string? GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
+
     }
 }

@@ -1,11 +1,12 @@
 using E_commerceSite.Web.Application.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Website.Data.Models;
 using Website.Infrastructure.Extensions;
 using Website.Services.Data.Interfaces;
 using Website.Services.Data;
+using Website.Data.Repository.Interfaces;
+using Website.Data.Repository;
 
 namespace E_commerceSite.Web.Application
 {
@@ -42,8 +43,13 @@ namespace E_commerceSite.Web.Application
             //builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
             //builder.Services.RegisterUserDefinedServices(typeof(IOrderService).Assembly);
 
+            builder.Services.AddScoped<IRepository<Order, Guid>, BaseRepository<Order, Guid>>();
             builder.Services.AddScoped<IUserService, UserService>();
-            //builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            
+
+
+            //builder.Services.AddApplicationServices();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -114,5 +120,6 @@ namespace E_commerceSite.Web.Application
             cfg.User.RequireUniqueEmail =
                 builder.Configuration.GetValue<bool>("Identity:User:RequireUniqueEmail");
         }
+
     }
 }

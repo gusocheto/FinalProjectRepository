@@ -15,6 +15,8 @@ namespace Website.ViewModels.ProductViewModels
 
         public decimal ProductPrice { get; set; }
 
+        public string ProductType { get; set; } = null!;
+
         public bool IsAvailable { get; set; }
     }
 }

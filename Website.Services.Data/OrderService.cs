@@ -23,7 +23,7 @@ namespace Website.Services.Data
             var allOrders = await this.orderRepository.GetAllAttached()
                 .Include(o => o.Status)
                 .Include(o => o.OrderUsers)
-                    .ThenInclude(ou => ou.ApplicationUser) // Include user details
+                    .ThenInclude(ou => ou.ApplicationUser)
                 .ToListAsync();
 
             var allOrdersViewModel = allOrders.Select(order => new AllOrdersViewModel

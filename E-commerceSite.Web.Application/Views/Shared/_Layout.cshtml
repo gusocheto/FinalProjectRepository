@@ -28,20 +28,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About us</a>
                         </li>
+                        @if (User?.Identity?.Name == "admin@web.com")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="AddProduct">Add Product</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AddProduct">Add Product</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Men">Men</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Men">Men</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Women">Women</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Women</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Kids</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Kids">Kids</a>
                         </li>
                           <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Accessories</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Accessories">Accessories</a>
                         </li>
                           <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Contact us</a>
@@ -50,8 +53,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">Cart</a>
                         </li>
                           <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SeeOrders">My orders</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="SeeOrders">My orders</a>
                         </li>
+                        @if (User?.Identity?.Name == "admin@web.com")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin panel directions</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

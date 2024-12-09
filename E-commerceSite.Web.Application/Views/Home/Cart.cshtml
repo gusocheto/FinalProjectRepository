@@ -37,5 +37,5 @@
     </div>
 }
 <div class="orderButton">
-    <a asp-controller="Home" asp-action="Order" asp-route-id="@User.Identity.Name" class="btn btn-info me-2 w-50">Order</a>
+    <a asp-controller="Order" asp-action="Order" asp-route-id="@User?.Identity?.Name" class="btn btn-info me-2 w-50">Order</a>
 </div>

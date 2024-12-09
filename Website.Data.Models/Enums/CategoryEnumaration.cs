@@ -24,5 +24,6 @@ namespace Website.Data.Models.Enums
         Sunglasses = 140,
         Jewelry = 150,
         Watches = 160,
+        Toys = 170,
     }
 }
