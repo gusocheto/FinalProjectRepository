@@ -40,14 +40,32 @@ namespace E_commerceSite.Web.Application
 
             //Services
             //builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
+            //builder.Services.RegisterRepositories(typeof(CartProducts).Assembly);
+
             //builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
             //builder.Services.RegisterUserDefinedServices(typeof(IOrderService).Assembly);
+            //builder.Services.RegisterUserDefinedServices(typeof(IHomeService).Assembly);
+            //builder.Services.AddScoped<IHomeService, HomeService>();
+            //builder.Services.AddScoped<IRepository<CartProducts, Guid>, BaseRepository<CartProducts, Guid>>();
 
+
+            //// Register repositories
+            builder.Services.AddScoped<IRepository<CartProducts, Guid>, BaseRepository<CartProducts, Guid>>();
+            builder.Services.AddScoped<IRepository<Product, Guid>, BaseRepository<Product, Guid>>();
             builder.Services.AddScoped<IRepository<Order, Guid>, BaseRepository<Order, Guid>>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IOrderService, OrderService>();
-            
 
+            builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
+            builder.Services.RegisterUserDefinedServices(typeof(IOrderService).Assembly);
+            builder.Services.RegisterUserDefinedServices(typeof(IHomeService).Assembly);
+
+            //// Register services
+            //builder.Services.AddScoped<IUserService, UserService>();
+            //builder.Services.AddScoped<IOrderService, OrderService>();
+            //builder.Services.AddScoped<IHomeService, HomeService>();
+
+            //builder.Services.RegisterRepositories(typeof(BaseRepository<CartProducts, Guid>).Assembly);
+            //builder.Services.RegisterRepositories(typeof(BaseRepository<Product, Guid>).Assembly);
+            //builder.Services.RegisterRepositories(typeof(BaseRepository<Order, Guid>).Assembly);
 
             //builder.Services.AddApplicationServices();
 
