@@ -24,5 +24,9 @@ namespace Website.ViewModels.ProductViewModels
 
         public required int Quantity { get; set; }
 
+        public required int ProductTypeId { get; set; }
+
+        public required int CategoryTypeId { get; set; }
+
     }
 }

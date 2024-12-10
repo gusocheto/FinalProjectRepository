@@ -1,117 +1,77 @@
-﻿using E_commerceSite.Web.Application.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Website.Data.Models;
+using System;
+using System.Threading.Tasks;
+using Website.Services.Data.Interfaces;
 using Website.ViewModels.ProductViewModels;
 
 namespace E_commerceSite.Web.Application.Controllers
 {
     public class ProductController : BaseController
     {
-        private readonly ILogger<ProductController> _logger;
-        private readonly ApplicationDbContext context;
-        private readonly RoleManager<ApplicationUser> roleManager;
-        private readonly UserManager<ApplicationUser> userManager;
-       
+        private readonly IProductService productService;
 
-        public ProductController(ILogger<ProductController> logger, ApplicationDbContext context)
+        public ProductController(IProductService productService)
         {
-            _logger = logger;
-            this.context = context;
+            this.productService = productService;
         }
 
-        public IActionResult Men()
+        public async Task<IActionResult> Men()
         {
-            var model = GetAllProducts();
-
+            var model = await productService.GetAllProductsAsync();
             return View(model);
         }
-        public IActionResult Women()
-        {
-            var model = GetAllProducts();
 
+        public async Task<IActionResult> Women()
+        {
+            var model = await productService.GetAllProductsAsync();
             return View(model);
         }
-        public IActionResult Kids()
-        {
-            var model = GetAllProducts();
 
+        public async Task<IActionResult> Kids()
+        {
+            var model = await productService.GetAllProductsAsync();
             return View(model);
         }
-        public IActionResult Accessories()
-        {
-            var model = GetAllProducts();
 
+        public async Task<IActionResult> Accessories()
+        {
+            var model = await productService.GetAllProductsAsync();
             return View(model);
         }
 
         [HttpGet]
         public IActionResult AddProduct()
         {
-            var categories = GetCategories();
-
-            var productTypes = GetProductTypes();
-
             var model = new ProductViewModel
             {
-                Categories = categories,
-                ProductTypes = productTypes
+                Categories = GetCategories(),
+                ProductTypes = GetProductTypes()
             };
 
             return View(model);
         }
 
         [HttpPost]
-        
-        public async Task<IActionResult> Add(ProductViewModel model)
+        public async Task<IActionResult> AddProduct(ProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 model.Categories = GetCategories();
-
                 model.ProductTypes = GetProductTypes();
-
                 return View(model);
             }
 
-            Product product = new Product
-            {
-                ProductName = model.ProductName,
-                ProductPrice = model.ProductPrice,
-                ProductDescription = model.ProductDescription,
-                ImageUrl = model.ImageUrl,
-                StockQuantity = model.ProductQuantity,
-                CategoryTypeId = model.CategoryId / 10,
-                ProductTypeId = model.ProductTypeId,
-                IsAvailable = true,
-            };
-
-            await context.Products.AddAsync(product);
-            await context.SaveChangesAsync();
-
+            await productService.AddProductAsync(model);
             return RedirectToAction(nameof(Men));
         }
 
         [HttpGet]
         public async Task<IActionResult> ProductDetails(Guid id)
         {
-            var model = await context.Products
-                .Where(p => p.ProductId == id)
-                .AsNoTracking()
-                .Select(p => new ProductDescriptionViewModel()
-                {
-                    Id = p.ProductId,
-                    ImageUrl = p.ImageUrl,
-                    ProductName = p.ProductName,
-                    Description = p.ProductDescription ?? string.Empty,
-                    Price = p.ProductPrice,
-                    CategoryName = p.Category.CategoryType.ToString(),
-                    Quantity = p.StockQuantity,
-                    IsAvailable = p.IsAvailable,
-                })
-                .FirstOrDefaultAsync();
+            var model = await productService.GetProductDetailsAsync(id);
+            if (model == null)
+                return NotFound();
 
             return View(model);
         }
@@ -120,117 +80,60 @@ namespace E_commerceSite.Web.Application.Controllers
         [Authorize]
         public async Task<IActionResult> EditProduct(Guid id)
         {
-            string? currentUserId = GetCurrentUserId();
+            var product = await productService.GetProductDetailsAsync(id);
+            if (product == null)
+                return NotFound();
 
-            var model = await context.Products
-                .Where(p => p.ProductId == id)
-                .Where(p => p.IsAvailable == true)
-                .AsNoTracking()
-                .Select(p => new ProductViewModel()
-                {
-                    ImageUrl = p.ImageUrl,
-                    ProductName = p.ProductName,
-                    ProductDescription = p.ProductDescription,
-                    ProductPrice = p.ProductPrice,
-                    CategoryId = p.CategoryTypeId,
-                    ProductTypeId = p.ProductTypeId,
-                })
-                .FirstOrDefaultAsync();
-
-            model.Categories = GetCategories();
-            model.ProductTypes = GetProductTypes();
+            var model = new ProductViewModel
+            {
+                Id = product.Id,
+                ProductName = product.ProductName,
+                ProductDescription = product.Description,
+                ProductPrice = product.Price,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryTypeId,
+                ProductTypeId = product.ProductTypeId,
+                Categories = GetCategories(),
+                ProductTypes = GetProductTypes()
+            };
 
             return View(model);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditProduct(ProductViewModel model, Guid id)
+        public async Task<IActionResult> EditProduct(Guid id, ProductViewModel model)
         {
-            if (ModelState.IsValid == false)
+            if (!ModelState.IsValid)
             {
                 model.Categories = GetCategories();
                 model.ProductTypes = GetProductTypes();
-
                 return View(model);
             }
 
+            var success = await productService.EditProductAsync(id, model);
+            if (!success)
+                return NotFound();
 
-            Product? entity = await context.Products.FindAsync(id);
-
-            if (entity == null || !entity.IsAvailable)
-            {
-                throw new ArgumentException("Invalid id");
-            }
-
-            string? currentUserId = GetCurrentUserId();
-
-            entity.ImageUrl = model.ImageUrl;
-            entity.ProductName = model.ProductName;
-            entity.ProductDescription = model.ProductDescription;
-            entity.ProductPrice = model.ProductPrice;
-            entity.CategoryTypeId = model.CategoryId / 10;
-
-            await context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(ProductDetails), new { model.Id });
+            return RedirectToAction(nameof(ProductDetails), new { id });
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> DeleteProduct(Guid id)
+        public IActionResult DeleteProduct(Guid id)
         {
-            var model = await context.Products
-                .Where(p => p.ProductId == id)
-                .Where(p => p.IsAvailable == true)
-                .AsNoTracking()
-                .Select(p => new DeleteProductViewModel()
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName,
-                    AdminId = GetCurrentUserId() ?? string.Empty,
-                    AdminName = User.Identity.Name,
-                })
-                .FirstOrDefaultAsync();
-
-            return View(model);
+            return View(new DeleteProductViewModel { ProductId = id });
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> DeleteProduct(DeleteProductViewModel model)
         {
-            Product? product = await context.Products
-                .Where(p => p.ProductId == model.ProductId)
-                .Where(p => p.IsAvailable == true)
-                .FirstOrDefaultAsync();
+            var success = await productService.DeleteProductAsync(model.ProductId);
+            if (!success)
+                return NotFound();
 
-            if (product != null)
-            {
-                product.IsAvailable = false;
-
-                await context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(HomeController.Index));
-        }
-
-        private  List<ProductPageViewModel> GetAllProducts()
-        {
-            var model = context.Products
-               .Select(p => new ProductPageViewModel()
-               {
-                   Id = p.ProductId,
-                   ProductName = p.ProductName,
-                   ProductImageUrl = p.ImageUrl ?? string.Empty,
-                   ProductPrice = p.ProductPrice,
-                   ProductType = p.ProductType.ProductTypeName.ToString(),
-                   IsAvailable = p.IsAvailable,
-               })
-               .AsNoTracking()
-               .ToList();
-
-            return model;
+            return RedirectToAction(nameof(Men));
         }
     }
 }

@@ -57,6 +57,8 @@ namespace E_commerceSite.Web.Application
             builder.Services.RegisterUserDefinedServices(typeof(IUserService).Assembly);
             builder.Services.RegisterUserDefinedServices(typeof(IOrderService).Assembly);
             builder.Services.RegisterUserDefinedServices(typeof(IHomeService).Assembly);
+            builder.Services.RegisterUserDefinedServices(typeof(IProductService).Assembly);
+            builder.Services.RegisterUserDefinedServices(typeof(IBaseService).Assembly);
 
             //// Register services
             //builder.Services.AddScoped<IUserService, UserService>();
