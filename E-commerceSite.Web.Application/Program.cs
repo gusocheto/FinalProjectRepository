@@ -94,6 +94,7 @@ namespace E_commerceSite.Web.Application
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.SeedRoles();
             app.SeedAdministrator(adminEmail, adminUsername, adminPassword);
 
             app.MapControllerRoute(

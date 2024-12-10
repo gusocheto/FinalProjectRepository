@@ -47,22 +47,8 @@ namespace Website.Infrastructure.Extensions
 
             Task.Run(async () =>
             {
-                bool roleExists = await roleManager.RoleExistsAsync(AdminRoleName);
-                IdentityRole<Guid>? adminRole = null;
-                if (!roleExists)
-                {
-                    adminRole = new IdentityRole<Guid>(AdminRoleName);
-
-                    IdentityResult result = await roleManager.CreateAsync(adminRole);
-                    if (!result.Succeeded)
-                    {
-                        throw new InvalidOperationException($"Error occurred while creating the {AdminRoleName} role!");
-                    }
-                }
-                else
-                {
-                    adminRole = await roleManager.FindByNameAsync(AdminRoleName);
-                }
+                //bool roleExists = await roleManager.RoleExistsAsync(AdminRoleName);
+                IdentityRole<Guid>? adminRole = await roleManager.FindByNameAsync(AdminRoleName);
 
                 ApplicationUser? adminUser = await userManager.FindByEmailAsync(email);
                 if (adminUser == null)

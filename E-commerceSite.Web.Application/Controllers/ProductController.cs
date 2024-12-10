@@ -1,5 +1,6 @@
 ﻿using E_commerceSite.Web.Application.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data.Models;
@@ -11,6 +12,9 @@ namespace E_commerceSite.Web.Application.Controllers
     {
         private readonly ILogger<ProductController> _logger;
         private readonly ApplicationDbContext context;
+        private readonly RoleManager<ApplicationUser> roleManager;
+        private readonly UserManager<ApplicationUser> userManager;
+       
 
         public ProductController(ILogger<ProductController> logger, ApplicationDbContext context)
         {
@@ -60,6 +64,7 @@ namespace E_commerceSite.Web.Application.Controllers
         }
 
         [HttpPost]
+        
         public async Task<IActionResult> Add(ProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -86,7 +91,7 @@ namespace E_commerceSite.Web.Application.Controllers
             await context.Products.AddAsync(product);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(product.ProductType.ProductTypeName));
+            return RedirectToAction(nameof(Men));
         }
 
         [HttpGet]
@@ -207,7 +212,7 @@ namespace E_commerceSite.Web.Application.Controllers
                 await context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(HomeController.Index));
         }
 
         private  List<ProductPageViewModel> GetAllProducts()

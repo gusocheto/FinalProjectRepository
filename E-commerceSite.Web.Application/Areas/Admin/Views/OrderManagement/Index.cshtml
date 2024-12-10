@@ -5,8 +5,6 @@
 @using Microsoft.EntityFrameworkCore
 @model IEnumerable<AllOrdersViewModel>
 
-@inject RoleManager<IdentityRole<Guid>> roleManager
-
 @{
     List<Status> statuses = Enum.GetValues(typeof(StatusEnumaration))
                 .Cast<StatusEnumaration>()
