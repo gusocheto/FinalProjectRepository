@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Security.Claims;
 using Website.Data.Models;
 using Website.Data.Models.Enums;
+using Website.Services.Data;
 using Website.Services.Data.Interfaces;
 using Website.ViewModels.OrderViewModels;
 using Website.ViewModels.ProductViewModels;
@@ -20,16 +21,19 @@ namespace E_commerceSite.Web.Application.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHomeService homeService;
+        private readonly IProductService productService;
 
-        public HomeController(ILogger<HomeController> logger, IHomeService homeService)
+        public HomeController(ILogger<HomeController> logger, IHomeService homeService, IProductService productService)
         {
             _logger = logger;
             this.homeService = homeService;
+            this.productService = productService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var bestSellers = await productService.GetTopBestSellersAsync(3);
+            return View(bestSellers);
         }
 
         public IActionResult Privacy()

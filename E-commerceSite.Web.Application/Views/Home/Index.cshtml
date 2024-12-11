@@ -14,23 +14,32 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <!-- Best Sellers Section -->
     <section class="best-sellers">
-        @foreach(var model in Model)
-        {
-            
-        }
+        <h2 class="section-title text-center">Best Sellers</h2>
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="@product.ProductImageUrl" class="card-img-top" style="max-height: 200px; object-fit: contain;" alt="@product.ProductName">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@product.ProductName</h5>
+                            <p class="card-text text-center text-muted">$@product.ProductPrice.ToString("F2")</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </section>
 
-    <!-- Category Sections -->
     <section class="categories">
         <div class="category-row">
-            <div class="category-item">Мъже</div>
-            <div class="category-item">Жени</div>
+            <div class="category-item"><a asp-action="Men" asp-controller="Product" />Men</div>
+            <div class="category-item"><a asp-action="Women" asp-controller="Product" />Women</div>
         </div>
         <div class="category-row">
-            <div class="category-item">Деца</div>
-            <div class="category-item">Аксесоари</div>
+            <div class="category-item"><a asp-action="Kids" asp-controller="Product" />Kids</div>
+            <div class="category-item"><a asp-action="Accessories" asp-controller="Product" />Accessories</div>
         </div>
     </section>
 </body>

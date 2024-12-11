@@ -39,29 +39,18 @@
                         }
                     </td>
                     <td>
-                        <form method="post" asp-action="AssignStatus" asp-controller="OrderManagement" asp-area="Admin" class="d-inline">
+                        <form method="post" asp-action="AssignOrderToStatusAsync" asp-controller="OrderManagement" asp-area="Admin" class="d-inline">
                             <input type="hidden" name="userId" value="@order.OrderId" />
                             <select name="status" class="form-select d-inline w-auto">
-                                @foreach (string status in order.Statuses)
+                                @foreach (Status status in statuses)
                                 {
-                                    <option value="@status">@status</option>
+                                    <option value="@status">@status.StatusType</option>
                                 }
                             </select>
                             <button type="submit" class="btn btn-primary btn-sm">Assign Role</button>
                         </form>
 
-                        <form method="post" asp-action="RemoveRole" asp-controller="UserManagement" asp-area="Admin" class="d-inline ms-2">
-                            <input type="hidden" name="userId" value="@order.OrderId" />
-                            <select name="role" class="form-select d-inline w-auto">
-                                @foreach (var status in order.Statuses)
-                                {
-                                    <option value="@status">@status</option>
-                                }
-                            </select>
-                            <button type="submit" class="btn btn-warning btn-sm">Remove Role</button>
-                        </form>
-
-                        <form method="post" asp-action="DeleteUser" asp-controller="UserManagement" asp-area="Admin" class="d-inline ms-2">
+                        <form method="post" asp-action="RemoveOrder" asp-controller="OrderManagement" asp-area="Admin" class="d-inline ms-2">
                             <input type="hidden" name="userId" value="@order.OrderId" />
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>

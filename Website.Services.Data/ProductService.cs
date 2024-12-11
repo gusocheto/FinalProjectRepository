@@ -112,7 +112,6 @@ namespace Website.Services.Data
 
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
-                // Use ToLower() for case-insensitive search
                 searchQuery = searchQuery.ToLower();
                 query = query.Where(p => p.ProductName.ToLower().Contains(searchQuery));
             }
@@ -130,6 +129,23 @@ namespace Website.Services.Data
             return await PaginatedList<ProductPageViewModel>.CreateAsync(result, pageIndex, pageSize);
         }
 
+        public async Task<IEnumerable<ProductPageViewModel>> GetTopBestSellersAsync(int count = 3)
+        {
+            return await productRepository
+                .GetAllAttached()
+                .OrderBy(p => p.TimesOrdered)
+                .Take(count)
+                .Select(p => new ProductPageViewModel
+                {
+                    Id = p.ProductId,
+                    ProductName = p.ProductName,
+                    ProductImageUrl = p.ImageUrl ?? string.Empty,
+                    ProductPrice = p.ProductPrice,
+                    ProductType = p.ProductType.ProductTypeName.ToString(),
+                    IsAvailable = p.IsAvailable,
+                })
+                .ToListAsync();
+        }
     }
 
     public class PaginatedList<T> : List<T>
@@ -154,5 +170,6 @@ namespace Website.Services.Data
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
+
     }
 }

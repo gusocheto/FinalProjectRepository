@@ -15,5 +15,6 @@ namespace Website.Services.Data.Interfaces
         Task<bool> EditProductAsync(Guid productId, ProductViewModel model);
         Task<bool> DeleteProductAsync(Guid productId);
         Task<PaginatedList<ProductPageViewModel>> GetPagedAndSearchedProductsAsync(string searchQuery, int pageIndex, int pageSize);
+        Task<IEnumerable<ProductPageViewModel>> GetTopBestSellersAsync(int count);
     }
 }

@@ -27,5 +27,53 @@ namespace E_commerceSite.Web.Application.Areas.Admin.Controllers
 
             return this.View(allUsers);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignStatus(Guid orderId, string status)
+        {
+            if (orderId == Guid.Empty || string.IsNullOrWhiteSpace(status))
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            bool orderExists = await this.orderService.OrderExistsByIdAsync(orderId);
+            if (!orderExists)
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            bool assignResult = await this.orderService.AssignOrderToStatusAsync(orderId, status);
+            if (!assignResult)
+            {
+                // Optionally: Add error handling logic or TempData message
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            return this.RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveOrder(Guid orderId)
+        {
+            if (orderId == Guid.Empty)
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            bool orderExists = await this.orderService.OrderExistsByIdAsync(orderId);
+            if (!orderExists)
+            {
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            bool removeResult = await this.orderService.RemoveOrderAsync(orderId);
+            if (!removeResult)
+            {
+                // Optionally: Add error handling logic or TempData message
+                return this.RedirectToAction(nameof(Index));
+            }
+
+            return this.RedirectToAction(nameof(Index));
+        }
     }
 }
