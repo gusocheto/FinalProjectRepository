@@ -1,5 +1,5 @@
 ﻿@using Website.ViewModels.ProductViewModels
-@model ProductViewModel
+@model IEnumerable<ProductPageViewModel>
 
 @{
     ViewData["Title"] = "Home";
@@ -16,12 +16,10 @@
 <body>
     <!-- Best Sellers Section -->
     <section class="best-sellers">
-    @*     <img><strong>Image</strong> @Model.ImageUrl</img>
-        <p><strong>Name:</strong> @Model.ProductName</p>
-        <p><strong>Price:</strong> @Model.ProductPrice</p>
-        <p><strong>Description:</strong> @Model.ProductDescription minutes</p>
-
-        <a asp-action="Index" class="btn btn-primary">Back to All Movies</a> *@
+        @foreach(var model in Model)
+        {
+            
+        }
     </section>
 
     <!-- Category Sections -->

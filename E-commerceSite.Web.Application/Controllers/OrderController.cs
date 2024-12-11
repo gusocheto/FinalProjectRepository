@@ -96,6 +96,17 @@ namespace E_commerceSite.Web.Application.Controllers
                 OrderId = order.OrderId,
             });
 
+            foreach (var product in cartProducts)
+            {
+                product.Product.StockQuantity--;
+                product.Product.TimesOrdered++;
+                if(product.Product.StockQuantity <= 0)
+                {
+                    product.Product.StockQuantity = 0;
+                    product.Product.IsAvailable = false;
+                }
+            }
+
             ApplicationUser? currAppUser = await context.ApplicationUsers
                 .Include(u => u.ProductCarts)
                 .FirstOrDefaultAsync(x => x.Id == currGuid);
