@@ -15,9 +15,9 @@ namespace E_commerceSite.Web.Application
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!;
-            string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;
-            string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!;
+            string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!; //admin@web.com
+            string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;//admin@web.com
+            string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!; //Admin123
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
