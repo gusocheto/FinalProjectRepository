@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Drawing.Printing;
 using System.Threading.Tasks;
 using Website.Data.Models;
 using Website.Services.Data.Interfaces;
@@ -17,31 +18,29 @@ namespace E_commerceSite.Web.Application.Controllers
             this.productService = productService;
         }
 
-        public async Task<IActionResult> Men()
+        public async Task<IActionResult> Men(string? searchQuery, int pageIndex = 1, int pageSize = 10)
         {
-            var model = await productService.GetAllProductsAsync();
-
-            return View(model);
-
-            //model.Where(x => x.IsAvailable == true)
-            //.Where(x => x.ProductName.StartsWith(search) || search == null);
-        }
-
-        public async Task<IActionResult> Women()
-        {
-            var model = await productService.GetAllProductsAsync();
+            var model = await productService.GetPagedAndSearchedProductsAsync(searchQuery, pageIndex, pageSize);
             return View(model);
         }
 
-        public async Task<IActionResult> Kids()
+
+
+        public async Task<IActionResult> Women(string? searchQuery, int pageIndex = 1, int pageSize = 10)
         {
-            var model = await productService.GetAllProductsAsync();
+            var model = await productService.GetPagedAndSearchedProductsAsync(searchQuery, pageIndex, pageSize);
             return View(model);
         }
 
-        public async Task<IActionResult> Accessories()
+        public async Task<IActionResult> Kids(string? searchQuery, int pageIndex = 1, int pageSize = 10)
         {
-            var model = await productService.GetAllProductsAsync();
+            var model = await productService.GetPagedAndSearchedProductsAsync(searchQuery, pageIndex, pageSize);
+            return View(model);
+        }
+
+        public async Task<IActionResult> Accessories(string? searchQuery, int pageIndex = 1, int pageSize = 10)
+        {
+            var model = await productService.GetPagedAndSearchedProductsAsync(searchQuery, pageIndex, pageSize);
             return View(model);
         }
 

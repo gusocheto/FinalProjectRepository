@@ -102,5 +102,57 @@ namespace Website.Services.Data
             await productRepository.UpdateAsync(product);
             return true;
         }
+
+        public async Task<PaginatedList<ProductPageViewModel>> GetPagedAndSearchedProductsAsync(
+                string? searchQuery, int pageIndex, int pageSize)
+        {
+            var query = productRepository
+                .GetAllAttached()
+                .Where(p => p.IsAvailable);
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                // Use ToLower() for case-insensitive search
+                searchQuery = searchQuery.ToLower();
+                query = query.Where(p => p.ProductName.ToLower().Contains(searchQuery));
+            }
+
+            var result = query.Select(p => new ProductPageViewModel
+            {
+                Id = p.ProductId,
+                ProductName = p.ProductName,
+                ProductImageUrl = p.ImageUrl ?? string.Empty,
+                ProductPrice = p.ProductPrice,
+                ProductType = p.ProductType.ProductTypeName.ToString(),
+                IsAvailable = p.IsAvailable,
+            });
+
+            return await PaginatedList<ProductPageViewModel>.CreateAsync(result, pageIndex, pageSize);
+        }
+
+    }
+
+    public class PaginatedList<T> : List<T>
+    {
+        public int PageIndex { get; private set; }
+        public int TotalPages { get; private set; }
+
+        public PaginatedList(IEnumerable<T> items, int count, int pageIndex, int pageSize)
+        {
+            PageIndex = pageIndex;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            AddRange(items);
+        }
+
+        public bool HasPreviousPage => PageIndex > 1;
+        public bool HasNextPage => PageIndex < TotalPages;
+
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
     }
 }

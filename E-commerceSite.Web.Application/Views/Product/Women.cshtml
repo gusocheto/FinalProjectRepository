@@ -1,9 +1,13 @@
-﻿@model IEnumerable<ProductPageViewModel>
+﻿@model PaginatedList<ProductPageViewModel>
+@using Website.Services.Data
 @using Website.ViewModels.ProductViewModels
+@using static Website.Common.ApplicationConstants
 
 @{
     ViewData["Title"] = "Products List";
     string currentProductType = "Female";
+    bool isAdmin = User.IsInRole(AdminRoleName);
+    string searchQuery = ViewBag.SearchQuery as string ?? string.Empty;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
@@ -12,6 +16,14 @@
 <hr />
 
 <div class="row text-center">
+    <div class="search-bar mb-3">
+        <form asp-controller="Product" asp-action="Men" method="get">
+            <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" placeholder="Enter product name..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-controller="Product" asp-action="Men" class="btn btn-warning justify-content-center align-items-center">Back</a>
+        </form>
+    </div>
+    <hr />
     @foreach (var product in Model)
     {
         @if (product.IsAvailable == true && product.ProductType == currentProductType)
@@ -87,4 +99,17 @@
             </div>
         }
     }
+    <div class="pagination mt-3">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Men" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-primary">Previous</a>
+        }
+
+        <span>Page @Model.PageIndex of @Model.TotalPages</span>
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Men" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-primary">Next</a>
+        }
+    </div>
 </div>

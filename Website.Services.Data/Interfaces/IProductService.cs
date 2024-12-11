@@ -14,5 +14,6 @@ namespace Website.Services.Data.Interfaces
         Task<ProductDescriptionViewModel?> GetProductDetailsAsync(Guid productId);
         Task<bool> EditProductAsync(Guid productId, ProductViewModel model);
         Task<bool> DeleteProductAsync(Guid productId);
+        Task<PaginatedList<ProductPageViewModel>> GetPagedAndSearchedProductsAsync(string searchQuery, int pageIndex, int pageSize);
     }
 }
