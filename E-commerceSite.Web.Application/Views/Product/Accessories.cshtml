@@ -17,10 +17,10 @@
 
 <div class="row text-center">
     <div class="search-bar mb-3">
-        <form asp-controller="Product" asp-action="Men" method="get">
+        <form asp-controller="Product" asp-action="Accessories" method="get">
             <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" placeholder="Enter product name..." />
             <button type="submit" class="btn btn-primary">Search</button>
-            <a asp-controller="Product" asp-action="Men" class="btn btn-warning justify-content-center align-items-center">Back</a>
+            <a asp-controller="Product" asp-action="Accessories" class="btn btn-warning justify-content-center align-items-center">Back</a>
         </form>
     </div>
     <hr />
@@ -102,14 +102,14 @@
     <div class="pagination mt-3">
         @if (Model.HasPreviousPage)
         {
-            <a asp-action="Men" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-primary">Previous</a>
+            <a asp-action="Accessories" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-primary">Previous</a>
         }
 
         <span>Page @Model.PageIndex of @Model.TotalPages</span>
 
         @if (Model.HasNextPage)
         {
-            <a asp-action="Men" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-primary">Next</a>
+            <a asp-action="Accessories" asp-route-searchQuery="@searchQuery" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-primary">Next</a>
         }
     </div>
 </div>
