@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Website.Data.Models;
 using Website.Services.Data.Interfaces;
 using Website.ViewModels.ProductViewModels;
 
@@ -19,7 +20,11 @@ namespace E_commerceSite.Web.Application.Controllers
         public async Task<IActionResult> Men()
         {
             var model = await productService.GetAllProductsAsync();
+
             return View(model);
+
+            //model.Where(x => x.IsAvailable == true)
+            //.Where(x => x.ProductName.StartsWith(search) || search == null);
         }
 
         public async Task<IActionResult> Women()
@@ -134,6 +139,17 @@ namespace E_commerceSite.Web.Application.Controllers
                 return NotFound();
 
             return RedirectToAction(nameof(Men));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
+        {
+            var model = await productService.GetAllProductsAsync();
+
+            model.Where(x => x.IsAvailable == true)
+                .Where(x => x.ProductName.StartsWith(search) || search == null);
+
+            return View(model);
         }
     }
 }

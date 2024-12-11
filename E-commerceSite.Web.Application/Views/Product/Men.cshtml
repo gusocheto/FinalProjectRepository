@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<ProductPageViewModel>
 @using Website.ViewModels.ProductViewModels
+@using static Website.Common.ApplicationConstants
 
 @{
     ViewData["Title"] = "Products List";
     string currentProductType = "Male";
+    bool isAdmin = User.IsInRole(AdminRoleName);
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
@@ -11,7 +13,17 @@
 </div>
 <hr />
 
+
 <div class="row text-center">
+
+    <div>
+        <input type="text" name="search" placeholder="Enter product name..." />
+        <input type="submit" asp-controller="Product" asp-action="Men" name="submit" value="Search" />
+        @*   <input type="hidden" asp-for="" /> *@
+
+    </div>
+
+    <hr />
     @foreach (var product in Model)
     {
         @if (product.IsAvailable == true && product.ProductType == currentProductType)
@@ -51,7 +63,7 @@
     }
     @foreach (var product in Model)
     {
-        @if (product.IsAvailable == false && User?.Identity?.Name == "admin@web.com" && product.ProductType == currentProductType)
+        @if (product.IsAvailable == false && isAdmin == true && product.ProductType == currentProductType)
         {
             <div class="col-md-3 mb-4">
                 <div class="card h-100 soft-deleted" style="width: 100%;">
